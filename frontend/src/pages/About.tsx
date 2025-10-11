@@ -19,31 +19,31 @@ const About = () => {
   const values = [
     {
       icon: Shield,
-      title: 'Trust & Security',
-      description: 'Every listing is verified by our admin team to ensure quality and authenticity.',
+      title: 'Verified Professionals',
+      description: 'Every contractor, applicator, and subcontractor is verified for trust and reliability.',
     },
     {
       icon: Users,
-      title: 'Community First',
-      description: 'We build meaningful connections between businesses worldwide.',
+      title: 'Industry Community',
+      description: 'Connect with construction & engineering professionals who understand your challenges.',
     },
     {
       icon: Award,
-      title: 'Excellence',
-      description: 'Committed to providing the best B2B marketplace experience.',
+      title: 'Quality First',
+      description: 'We prioritize excellence in every listing, application, and partnership.',
     },
     {
       icon: Heart,
-      title: 'Support',
-      description: '24/7 customer support to help you succeed in your business goals.',
+      title: 'Dedicated Support',
+      description: 'Our team is here to help you succeed—before, during, and after your project.',
     },
   ];
 
   const stats = [
-    { number: '10,000+', label: 'Active Businesses' },
-    { number: '50,000+', label: 'Successful Connections' },
+    { number: '10,000+', label: 'Verified Professionals' },
+    { number: '50,000+', label: 'Project Connections' },
     { number: '150+', label: 'Countries Served' },
-    { number: '98%', label: 'Satisfaction Rate' },
+    { number: '98%', label: 'Client Satisfaction' },
   ];
 
   return (
@@ -62,7 +62,7 @@ const About = () => {
             >
               <h1 className="mb-6 text-5xl font-bold tracking-tight">About ProMart</h1>
               <p className="text-xl opacity-95">
-                Empowering businesses to connect, collaborate, and grow together
+                Connecting Construction & Engineering Professionals for Success
               </p>
             </motion.div>
             {animationData && (
@@ -95,13 +95,10 @@ const About = () => {
                 <h2 className="text-3xl font-bold">Our Mission</h2>
               </div>
               <p className="mb-4 text-lg leading-relaxed text-muted-foreground">
-                At ProMart, we're on a mission to revolutionize B2B networking by creating
-                a trusted platform where businesses can discover opportunities, showcase their
-                services, and build lasting partnerships.
-              </p>
-              <p className="text-lg leading-relaxed text-muted-foreground">
-                We believe in the power of verified connections and transparent communication
-                to drive business growth globally.
+                We aim to transform the way construction and engineering professionals interact.
+                Our digital marketplace provides businesses and individuals with the tools to
+                showcase their services, explore new opportunities, and stay updated on the latest
+                industry trends.
               </p>
             </motion.div>
 
@@ -114,17 +111,30 @@ const About = () => {
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                   <TrendingUp className="h-6 w-6 text-primary" />
                 </div>
-                <h2 className="text-3xl font-bold">Our Vision</h2>
+                <h2 className="text-3xl font-bold">What We Offer</h2>
               </div>
-              <p className="mb-4 text-lg leading-relaxed text-muted-foreground">
-                To become the world's most trusted B2B marketplace, where every business—from
-                startups to enterprises—can find verified partners and unlock new growth
-                opportunities.
-              </p>
-              <p className="text-lg leading-relaxed text-muted-foreground">
-                We envision a future where business connections are seamless, secure, and
-                mutually beneficial for all parties involved.
-              </p>
+              <ul className="space-y-3 text-lg leading-relaxed text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">✅</span>
+                  <span><strong>Business Listings:</strong> Discover trusted contractors, applicators, and service providers.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">✅</span>
+                  <span><strong>Applications:</strong> Apply for projects and grow your professional network.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">✅</span>
+                  <span><strong>Industry News:</strong> Stay updated with the latest insights and trends.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">✅</span>
+                  <span><strong>Advertisement:</strong> Promote your services to a targeted audience.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">✅</span>
+                  <span><strong>Easy Search:</strong> Find the right professionals effortlessly.</span>
+                </li>
+              </ul>
             </motion.div>
           </div>
         </div>
@@ -160,9 +170,9 @@ const About = () => {
             viewport={{ once: true }}
             className="mb-12 text-center"
           >
-            <h2 className="mb-4 text-4xl font-bold">Our Core Values</h2>
+            <h2 className="mb-4 text-4xl font-bold">Why Choose ProMart?</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              These principles guide everything we do at ProMart
+              We’re passionate about laying the foundation for your success
             </p>
           </motion.div>
 
@@ -199,18 +209,17 @@ const About = () => {
           >
             <h2 className="mb-6 text-4xl font-bold">Our Story</h2>
             <p className="mb-4 text-lg leading-relaxed text-muted-foreground">
-              Founded in 2020, ProMart was born from a simple observation: businesses needed
-              a better way to find and connect with reliable partners. Traditional methods
-              were time-consuming, risky, and often led to disappointment.
+              Founded in 2020, ProMart was born from a simple observation: construction and
+              engineering professionals needed a better way to find reliable partners.
+              Traditional methods were slow, risky, and inefficient.
             </p>
             <p className="mb-4 text-lg leading-relaxed text-muted-foreground">
-              We set out to change that by building a platform where every listing is
-              verified, every connection is meaningful, and every business has an equal
-              opportunity to shine.
+              We built ProMart to solve this—creating a verified, easy-to-use platform where
+              contractors, applicators, and subcontractors can connect with confidence.
             </p>
             <p className="text-lg leading-relaxed text-muted-foreground">
-              Today, we're proud to serve thousands of businesses worldwide, helping them
-              grow through trusted connections and verified opportunities.
+              Today, we empower thousands of professionals worldwide to win projects,
+              build networks, and grow their businesses on a foundation of trust.
             </p>
           </motion.div>
         </div>

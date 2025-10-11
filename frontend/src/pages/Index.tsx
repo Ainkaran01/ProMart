@@ -1,8 +1,22 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { motion } from 'framer-motion';
-import { Building2, Shield, TrendingUp, Users, CheckCircle, ArrowRight, MessageSquare } from 'lucide-react';
+import {
+  Building2,
+  Shield,
+  TrendingUp,
+  Users,
+  CheckCircle,
+  ArrowRight,
+  MessageSquare,
+} from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Lottie from 'lottie-react';
@@ -13,115 +27,150 @@ const Index = () => {
   const [networkAnimation, setNetworkAnimation] = useState<any>(null);
 
   useEffect(() => {
-    // Business growth animation
+    // Trim whitespace in URLs
     fetch('https://assets5.lottiefiles.com/packages/lf20_uu0x8lqv.json')
-      .then(response => response.json())
-      .then(data => setHeroAnimation(data))
-      .catch(() => console.log('Hero animation loading failed'));
-    
-    // Network/connection animation
+      .then((res) => res.json())
+      .then(setHeroAnimation)
+      .catch(console.warn);
+
     fetch('https://assets4.lottiefiles.com/private_files/lf30_WdTEui.json')
-      .then(response => response.json())
-      .then(data => setNetworkAnimation(data))
-      .catch(() => console.log('Network animation loading failed'));
+      .then((res) => res.json())
+      .then(setNetworkAnimation)
+      .catch(console.warn);
   }, []);
 
   const features = [
     {
       icon: Building2,
       title: 'List Your Business',
-      description: 'Create professional listings and reach potential clients',
+      description: 'Create professional listings and reach qualified clients.',
     },
     {
       icon: TrendingUp,
       title: 'Promoted Ads',
-      description: 'Boost visibility with featured ad placements',
+      description: 'Amplify visibility with premium ad placements.',
     },
     {
       icon: Shield,
       title: 'Verified Listings',
-      description: 'All listings reviewed and approved by our admin team',
+      description: 'Trusted by clients—every listing is manually verified.',
     },
     {
       icon: Users,
       title: 'B2B Network',
-      description: 'Connect with businesses across industries',
+      description: 'Forge partnerships across industries and borders.',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background font-sans">
       <Navbar />
-      
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-hover to-primary py-24 text-primary-foreground">
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-24 text-white">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-8 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
               className="text-center lg:text-left"
             >
-              <h1 className="mb-6 text-5xl font-bold tracking-tight md:text-6xl">
-                Connect, Trade, Grow
-              </h1>
-              <p className="mb-8 text-xl opacity-95">
-                The premier B2B marketplace for businesses to showcase services and find opportunities
+              <motion.h1
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="mb-6 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Connect. <span className="text-amber-400">Trade.</span> Grow.
+              </motion.h1>
+              <p className="mb-8 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto lg:mx-0">
+                The premier B2B marketplace for discerning businesses to showcase expertise and unlock high-value opportunities.
               </p>
               <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                 <Link to="/register">
-                  <Button size="lg" variant="secondary" className="shadow-lg text-lg hover:shadow-xl">
+                  <Button
+                    size="lg"
+                    className="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/30 transition-all duration-300 px-8"
+                  >
                     Get Started
                   </Button>
                 </Link>
                 <Link to="/listings">
-                  <Button size="lg" variant="outline" className="border-2 border-primary-foreground bg-transparent text-lg text-primary-foreground shadow-lg hover:bg-primary-foreground hover:text-primary hover:shadow-xl">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-amber-500 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 backdrop-blur-sm bg-white/5 shadow-lg"
+                  >
                     Browse Listings
                   </Button>
                 </Link>
               </div>
             </motion.div>
+
             {heroAnimation && (
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="hidden lg:block"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+                className="flex justify-center lg:justify-end"
               >
-                <Lottie animationData={heroAnimation} loop={true} />
+                <div className="w-full max-w-md lg:max-w-lg">
+                  <Lottie animationData={heroAnimation} loop={true} />
+                </div>
               </motion.div>
             )}
           </div>
         </div>
-        
+
         <div className="absolute -bottom-1 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 120L1440 120L1440 0C1440 0 1080 80 720 80C360 80 0 0 0 0L0 120Z" fill="hsl(var(--background))"/>
+          <svg
+            viewBox="0 0 1440 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="text-background"
+          >
+            <path
+              d="M0 120L1440 120L1440 0C1440 0 1080 80 720 80C360 80 0 0 0 0L0 120Z"
+              fill="currentColor"
+            />
           </svg>
         </div>
       </section>
 
-      <section className="py-20">
+      {/* Why Choose Us */}
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+          <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
             <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
             >
-              <h2 className="mb-4 text-4xl font-bold">Why Choose ProMart?</h2>
-              <p className="text-lg text-muted-foreground">
-                Professional marketplace built for B2B success
+              <h2
+                className="mb-4 text-4xl font-bold text-slate-800"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Why ProMart?
+              </h2>
+              <p className="text-lg text-slate-600 max-w-xl">
+                A curated B2B ecosystem built for trust, visibility, and growth—designed for businesses that demand excellence.
               </p>
             </motion.div>
+
             {networkAnimation && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="flex justify-center"
               >
-                <Lottie animationData={networkAnimation} loop={true} />
+                <div className="w-full max-w-md">
+                  <Lottie animationData={networkAnimation} loop={true} />
+                </div>
               </motion.div>
             )}
           </div>
@@ -134,28 +183,34 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group rounded-lg border bg-card p-6 shadow-sm transition-all hover:border-primary hover:shadow-premium"
+                className="group rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
-                <feature.icon className="mb-4 h-12 w-12 text-primary transition-transform group-hover:scale-110" />
-                <h3 className="mb-2 text-xl font-semibold">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <feature.icon className="mb-4 h-10 w-10 text-amber-500" />
+                <h3 className="mb-2 text-xl font-semibold text-slate-800">{feature.title}</h3>
+                <p className="text-slate-600">{feature.description}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t bg-gradient-to-br from-primary/5 to-background py-20">
+      {/* Stats */}
+      <section className="py-24 bg-gradient-to-br from-slate-50 to-amber-50/20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="mb-12 text-center"
+            className="mb-16 text-center"
           >
-            <h2 className="mb-4 text-4xl font-bold">ProMart by the Numbers</h2>
-            <p className="text-lg text-muted-foreground">
-              Join a thriving community of businesses
+            <h2
+              className="mb-4 text-4xl font-bold text-slate-800"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              By the Numbers
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Join a thriving network of forward-thinking businesses.
             </p>
           </motion.div>
 
@@ -163,7 +218,7 @@ const Index = () => {
             {[
               { number: '500+', label: 'Active Businesses', icon: Building2 },
               { number: '10K+', label: 'Monthly Visitors', icon: Users },
-              { number: '95%', label: 'Satisfaction Rate', icon: TrendingUp },
+              { number: '95%', label: 'Client Satisfaction', icon: TrendingUp },
               { number: '2.5K+', label: 'Successful Deals', icon: CheckCircle },
             ].map((stat, index) => (
               <motion.div
@@ -173,11 +228,11 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="border-2 text-center">
-                  <CardContent className="pt-6">
-                    <stat.icon className="mx-auto mb-4 h-12 w-12 text-primary" />
-                    <div className="mb-2 text-4xl font-bold text-primary">{stat.number}</div>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <Card className="border-0 bg-white/70 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+                  <CardContent className="pt-6 text-center">
+                    <stat.icon className="mx-auto mb-4 h-10 w-10 text-amber-500" />
+                    <div className="mb-2 text-3xl font-bold text-slate-800">{stat.number}</div>
+                    <p className="text-slate-600">{stat.label}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -186,75 +241,23 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="py-20">
+            {/* Testimonials */}
+      <section className="py-24 bg-slate-50">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="mb-12 text-center"
+            className="mb-16 text-center"
           >
-            <h2 className="mb-4 text-4xl font-bold">How It Works</h2>
-            <p className="text-lg text-muted-foreground">
-              Get started in three simple steps
-            </p>
-          </motion.div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            {[
-              {
-                step: '01',
-                title: 'Create Your Account',
-                description: 'Sign up and complete your business profile in minutes',
-                icon: Users,
-              },
-              {
-                step: '02',
-                title: 'List Your Services',
-                description: 'Create professional listings with all the details',
-                icon: Building2,
-              },
-              {
-                step: '03',
-                title: 'Connect & Grow',
-                description: 'Start receiving inquiries and close deals',
-                icon: TrendingUp,
-              },
-            ].map((step, index) => (
-              <motion.div
-                key={step.step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-              >
-                <Card className="relative overflow-hidden border-2 p-6">
-                  <div className="absolute right-4 top-4 text-6xl font-bold text-primary/10">
-                    {step.step}
-                  </div>
-                  <step.icon className="mb-4 h-12 w-12 text-primary" />
-                  <CardTitle className="mb-3">{step.title}</CardTitle>
-                  <CardDescription className="text-base">
-                    {step.description}
-                  </CardDescription>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t bg-muted/30 py-20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="mb-12 text-center"
-          >
-            <h2 className="mb-4 text-4xl font-bold">What Our Clients Say</h2>
-            <p className="text-lg text-muted-foreground">
-              Real stories from businesses like yours
+            <h2
+              className="mb-4 text-4xl font-bold text-slate-800"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              Trusted by Industry Leaders
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Hear from businesses transforming their growth with ProMart.
             </p>
           </motion.div>
 
@@ -263,17 +266,17 @@ const Index = () => {
               {
                 name: 'Sarah Johnson',
                 company: 'TechFlow Solutions',
-                quote: 'ProMart helped us connect with quality clients. We\'ve seen a 40% increase in leads within the first month.',
+                quote: 'ProMart helped us connect with quality clients. We’ve seen a 40% increase in qualified leads within the first month.',
               },
               {
                 name: 'Michael Chen',
                 company: 'Global Logistics Co',
-                quote: 'The verification process gives us credibility. Clients trust us more knowing we\'re verified by ProMart.',
+                quote: 'The verification process gives us instant credibility. Clients trust us more knowing we’re ProMart-verified.',
               },
               {
                 name: 'Emily Rodriguez',
                 company: 'Creative Design Studio',
-                quote: 'Best B2B platform we\'ve used. The interface is intuitive and customer support is excellent.',
+                quote: 'Best B2B platform we’ve used. Intuitive, elegant, and backed by exceptional support.',
               },
             ].map((testimonial, index) => (
               <motion.div
@@ -283,16 +286,16 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="h-full">
-                  <CardHeader>
-                    <MessageSquare className="mb-2 h-8 w-8 text-primary" />
-                    <CardDescription className="text-base italic">
-                      "{testimonial.quote}"
+                <Card className="h-full rounded-2xl border-0 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-4">
+                    <MessageSquare className="mb-3 h-6 w-6 text-amber-500" />
+                    <CardDescription className="text-base italic text-slate-700">
+                      “{testimonial.quote}”
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="font-semibold">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.company}</p>
+                    <p className="font-semibold text-slate-800">{testimonial.name}</p>
+                    <p className="text-sm text-amber-600">{testimonial.company}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -301,21 +304,30 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="border-t bg-gradient-to-br from-muted/50 to-background py-20">
+      {/* CTA */}
+      <section className="py-24 bg-gradient-to-r from-slate-900 to-slate-800 text-white">
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="mb-4 text-3xl font-bold">Ready to Expand Your Reach?</h2>
-            <p className="mb-8 text-lg text-muted-foreground">
-              Join hundreds of businesses already growing with ProMart
+            <h2
+              className="mb-4 text-3xl md:text-4xl font-bold"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              Ready to Expand Your Reach?
+            </h2>
+            <p className="mb-10 text-lg text-slate-300 max-w-2xl mx-auto">
+              Join hundreds of elite businesses already growing with ProMart.
             </p>
             <Link to="/register">
-              <Button size="lg" className="shadow-lg text-lg hover:shadow-xl">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold px-8 py-6 text-lg shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
+              >
                 Start Free Today
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </motion.div>
