@@ -9,7 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import mockApi from '@/services/mockApi';
 import { Listing, Notification } from '@/types';
-import { CheckCircle, XCircle, AlertCircle, Eye, FileText, Download, Users, Settings, BookOpen, List, BarChart3, TrendingUp, Clock, Building2 } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Eye, FileText, Download, Users, Settings as SettingsIcon, BookOpen, List, BarChart3, TrendingUp, Clock, Building2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import StatusBadge from '@/components/StatusBadge';
 import NotificationCenter from '@/components/NotificationCenter';
@@ -18,6 +18,8 @@ import Footer from '@/components/Footer';
 import BlogManagement from './BlogManagement';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import UserManagement from './UserManagement';
+import Settings from './Settings';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -113,7 +115,7 @@ const AdminDashboard = () => {
     { id: 'approved' as const, label: 'Approved Listings', icon: CheckCircle, count: approvedListings.length },
     { id: 'rejected' as const, label: 'Rejected Listings', icon: XCircle, count: rejectedListings.length },
     { id: 'users' as const, label: 'User Management', icon: Users },
-    { id: 'settings' as const, label: 'Account Settings', icon: Settings },
+    { id: 'settings' as const, label: 'Account Settings', icon: SettingsIcon },
     { id: 'blog' as const, label: 'Blog Management', icon: BookOpen },
   ];
 
@@ -443,127 +445,8 @@ const AdminDashboard = () => {
             {activeSection === 'pending' && renderListings(pendingListings, 'Pending Listings')}
             {activeSection === 'approved' && renderListings(approvedListings, 'Approved Listings')}
             {activeSection === 'rejected' && renderListings(rejectedListings, 'Rejected Listings')}
-            {activeSection === 'users' && (
-              <div className="space-y-4">
-                <h2 className="text-2xl font-bold">User Management</h2>
-                
-                <div className="grid gap-6 md:grid-cols-3">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">124</div>
-                      <p className="text-xs text-muted-foreground">Registered accounts</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-sm font-medium">Company Users</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">120</div>
-                      <p className="text-xs text-muted-foreground">Business accounts</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-sm font-medium">Admin Users</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">4</div>
-                      <p className="text-xs text-muted-foreground">Administrator accounts</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Users</CardTitle>
-                    <CardDescription>Latest registered accounts</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {[
-                        { name: 'Tech Solutions Inc', email: 'contact@techsolutions.com', role: 'Company', date: '2 days ago' },
-                        { name: 'Global Logistics Co', email: 'info@globallogistics.com', role: 'Company', date: '3 days ago' },
-                        { name: 'Creative Design Studio', email: 'hello@creativedesign.com', role: 'Company', date: '5 days ago' },
-                        { name: 'Marketing Pros Ltd', email: 'team@marketingpros.com', role: 'Company', date: '1 week ago' },
-                      ].map((user, index) => (
-                        <div key={index} className="flex items-center justify-between border-b pb-3 last:border-0">
-                          <div>
-                            <p className="font-medium">{user.name}</p>
-                            <p className="text-sm text-muted-foreground">{user.email}</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm font-medium">{user.role}</p>
-                            <p className="text-xs text-muted-foreground">{user.date}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-            {activeSection === 'settings' && (
-              <div className="space-y-4">
-                <h2 className="text-2xl font-bold">Account Settings</h2>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Admin Profile</CardTitle>
-                    <CardDescription>Manage your admin account information</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <Label>Email Address</Label>
-                      <p className="text-sm text-muted-foreground">{user?.email}</p>
-                    </div>
-                    <div>
-                      <Label>Role</Label>
-                      <p className="text-sm text-muted-foreground">Administrator</p>
-                    </div>
-                    <div>
-                      <Label>Account Status</Label>
-                      <p className="text-sm text-success">Active</p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Platform Settings</CardTitle>
-                    <CardDescription>Configure platform-wide preferences</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Email Notifications</p>
-                        <p className="text-sm text-muted-foreground">Receive alerts for new listings</p>
-                      </div>
-                      <Button variant="outline" size="sm">Enabled</Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Auto-Approval</p>
-                        <p className="text-sm text-muted-foreground">Automatically approve verified companies</p>
-                      </div>
-                      <Button variant="outline" size="sm">Disabled</Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Maintenance Mode</p>
-                        <p className="text-sm text-muted-foreground">Temporarily disable public access</p>
-                      </div>
-                      <Button variant="outline" size="sm">Off</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+            {activeSection === 'users' && <UserManagement />}
+            {activeSection === 'settings' && <Settings/>}
             {activeSection === 'blog' && <BlogManagement />}
           </motion.div>
         </main>
