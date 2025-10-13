@@ -10,13 +10,15 @@ import mockApi from '@/services/mockApi';
 import { useToast } from '@/hooks/use-toast';
 import logo from '@/assets/promart-logo.png';
 import Lottie from 'lottie-react';
-import { useEffect, useState as useStateEffect } from 'react';
+import { useEffect } from 'react';
+import { ArrowRight, Mail, Lock } from 'lucide-react';
+import Navbar from '@/components/Navbar';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [animationData, setAnimationData] = useStateEffect<any>(null);
+  const [animationData, setAnimationData] = useState<any>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -52,72 +54,156 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/10 to-background p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md"
-      >
-        <div className="mb-8 text-center">
-          <Link to="/" className="inline-block">
-            <img src={logo} alt="ProMart" className="mx-auto h-40" />
-          </Link>
-          {animationData && (
-            <div className="mx-auto mt-4 w-32">
-              <Lottie animationData={animationData} loop={true} />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-background to-amber-50/20">
+      {/* Header */}
+      <Navbar />
+
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center p-4">
+        <div className="grid w-full max-w-6xl lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          {/* Desktop Animation - ON THE LEFT SIDE */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="hidden lg:block order-1"
+          >
+            <div className="text-center">
+              {animationData && (
+                <div className="mx-auto w-full max-w-md">
+                  <Lottie animationData={animationData} loop={true} />
+                </div>
+              )}
+              <div className="mt-8 text-left">
+                <h1 
+                  className="mb-4 text-4xl font-bold text-slate-800"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  Welcome Back to ProMart
+                </h1>
+                <p className="text-lg text-slate-600">
+                  Continue your journey with the premier B2B marketplace for construction and engineering professionals.
+                </p>
+              </div>
             </div>
-          )}
+          </motion.div>
+
+          {/* Form - ON THE RIGHT SIDE FOR DESKTOP */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full order-2 lg:order-2"
+          >
+            <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-6 lg:p-8 shadow-lg">
+              <div className="mb-6 lg:mb-8 text-center">
+                <h1 className="mb-2 text-2xl lg:text-3xl font-bold text-slate-800">Welcome Back</h1>
+                <p className="text-slate-600">Sign in to your account</p>
+              </div>
+
+              {/* Mobile Animation - ONLY SHOWS ON MOBILE, ABOVE THE FORM */}
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="lg:hidden mb-6"
+              >
+                <div className="text-center">
+                  {animationData && (
+                    <div className="mx-auto w-48 mb-4">
+                      <Lottie animationData={animationData} loop={true} />
+                    </div>
+                  )}
+                  <div>
+                    <h2 
+                      className="mb-2 text-xl font-bold text-slate-800"
+                      style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
+                      Welcome Back
+                    </h2>
+                    <p className="text-sm text-slate-600">
+                      Continue your journey with ProMart
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-slate-800">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      placeholder="you@company.com"
+                      className="pl-10 border-slate-300 focus:border-amber-500 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-slate-800">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                    <Input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      placeholder="••••••••"
+                      className="pl-10 border-slate-300 focus:border-amber-500 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
+                  disabled={loading}
+                  size="lg"
+                >
+                  {loading ? (
+                    'Logging in...'
+                  ) : (
+                    <>
+                      Sign In
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <p className="text-slate-600">
+                  Don't have an account?{' '}
+                  <Link 
+                    to="/register" 
+                    className="font-semibold text-amber-600 hover:text-amber-700 hover:underline transition-colors"
+                  >
+                    Create account
+                  </Link>
+                </p>
+              </div>
+
+              {/* Demo Credentials */}
+              <div className="mt-8 rounded-xl bg-slate-50/80 border border-slate-200 p-4">
+                <p className="mb-3 text-sm font-semibold text-slate-800">Demo Credentials:</p>
+                <div className="space-y-2 text-xs text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-amber-500"></div>
+                    <span><strong>Admin:</strong> admin@promart.com (any password)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-amber-500"></div>
+                    <span><strong>Company:</strong> company@example.com (any password)</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
         </div>
-
-        <Card className="p-8">
-          <h1 className="mb-6 text-2xl font-bold">Welcome Back</h1>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="you@company.com"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="••••••••"
-              />
-            </div>
-
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center text-sm">
-            <p className="text-muted-foreground">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-primary hover:underline">
-                Register
-              </Link>
-            </p>
-          </div>
-
-          <div className="mt-4 rounded-lg bg-muted p-4 text-xs">
-            <p className="mb-2 font-semibold">Demo Credentials:</p>
-            <p>Admin: admin@promart.com (any password)</p>
-            <p>Company: company@example.com (any password)</p>
-          </div>
-        </Card>
-      </motion.div>
+      </div>
     </div>
   );
 };
