@@ -24,6 +24,7 @@ import {
   Star,
   Download,
   Shield,
+  ArrowRight,
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import StatusBadge from '@/components/StatusBadge';
@@ -62,8 +63,8 @@ const ListingDetails = () => {
         <Navbar />
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="text-center">
-            <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-            <p className="text-muted-foreground">Loading...</p>
+            <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-amber-500 border-t-transparent"></div>
+            <p className="text-slate-600">Loading...</p>
           </div>
         </div>
       </div>
@@ -76,8 +77,13 @@ const ListingDetails = () => {
         <Navbar />
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="text-center">
-            <h2 className="mb-4 text-2xl font-bold">Listing Not Found</h2>
-            <Button onClick={() => navigate('/listings')}>Browse Listings</Button>
+            <h2 className="mb-4 text-2xl font-bold text-slate-800">Listing Not Found</h2>
+            <Button 
+              onClick={() => navigate('/listings')}
+              className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold"
+            >
+              Browse Listings
+            </Button>
           </div>
         </div>
       </div>
@@ -89,8 +95,8 @@ const ListingDetails = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <div className="relative border-b bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="container mx-auto px-4 py-12">
+      <div className="relative border-b bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+        <div className="container mx-auto px-4 py-12 pb-40">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,7 +105,7 @@ const ListingDetails = () => {
             <Button
               variant="ghost"
               onClick={() => navigate(-1)}
-              className="mb-6 -ml-2"
+              className="mb-6 -ml-2 text-slate-300 hover:text-white hover:bg-white/10"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
@@ -110,22 +116,25 @@ const ListingDetails = () => {
                 <div className="mb-4 flex flex-wrap items-center gap-3">
                   <StatusBadge status={listing.status} />
                   {listing.isPaidAd && (
-                    <Badge className="bg-gradient-to-r from-primary to-primary-hover">
+                    <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 border-0">
                       <Star className="mr-1 h-3 w-3" />
                       Featured
                     </Badge>
                   )}
-                  <Badge variant="secondary">
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0">
                     <Tag className="mr-1 h-3 w-3" />
                     {listing.category}
                   </Badge>
                 </div>
 
-                <h1 className="mb-4 text-4xl font-bold tracking-tight lg:text-5xl">
+                <h1 
+                  className="mb-4 text-4xl font-bold tracking-tight lg:text-5xl"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
                   {listing.title}
                 </h1>
 
-                <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="flex items-center gap-2 text-slate-300">
                   <Calendar className="h-4 w-4" />
                   <span className="text-sm">
                     Posted {formatDistanceToNow(new Date(listing.createdAt), { addSuffix: true })}
@@ -134,15 +143,38 @@ const ListingDetails = () => {
               </div>
 
               <div className="flex gap-3">
-                <Button size="lg" className="shadow-md">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
+                >
                   Contact Company
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <Button variant="outline" size="lg">
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="border-amber-500 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 backdrop-blur-sm bg-white/5"
+                >
                   Save Listing
                 </Button>
               </div>
             </div>
           </motion.div>
+        </div>
+        
+        {/* Wave divider */}
+        <div className="absolute -bottom-1 left-0 right-0">
+          <svg
+            viewBox="0 0 1440 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="text-background"
+          >
+            <path
+              d="M0 120L1440 120L1440 0C1440 0 1080 80 720 80C360 80 0 0 0 0L0 120Z"
+              fill="currentColor"
+            />
+          </svg>
         </div>
       </div>
 
@@ -157,27 +189,27 @@ const ListingDetails = () => {
               className="space-y-8"
             >
               {/* Description */}
-              <Card className="gradient-card p-8 shadow-premium">
+              <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-8 shadow-lg">
                 <div className="mb-6 flex items-center gap-3">
-                  <div className="rounded-lg bg-primary/10 p-2">
-                    <FileText className="h-5 w-5 text-primary" />
+                  <div className="rounded-lg bg-amber-500/10 p-2">
+                    <FileText className="h-5 w-5 text-amber-500" />
                   </div>
-                  <h2 className="text-2xl font-bold">Description</h2>
+                  <h2 className="text-2xl font-bold text-slate-800">Description</h2>
                 </div>
                 <div className="prose prose-slate max-w-none">
-                  <p className="text-base leading-relaxed text-foreground">
+                  <p className="text-base leading-relaxed text-slate-600">
                     {listing.description}
                   </p>
                 </div>
               </Card>
 
               {/* Key Features */}
-              <Card className="gradient-card p-8 shadow-premium">
+              <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-8 shadow-lg">
                 <div className="mb-6 flex items-center gap-3">
-                  <div className="rounded-lg bg-primary/10 p-2">
-                    <Award className="h-5 w-5 text-primary" />
+                  <div className="rounded-lg bg-amber-500/10 p-2">
+                    <Award className="h-5 w-5 text-amber-500" />
                   </div>
-                  <h2 className="text-2xl font-bold">Key Features</h2>
+                  <h2 className="text-2xl font-bold text-slate-800">Key Features</h2>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
                   {[
@@ -195,10 +227,10 @@ const ListingDetails = () => {
                       transition={{ delay: 0.2 + index * 0.05 }}
                       className="flex items-center gap-3"
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-success/10">
-                        <CheckCircle2 className="h-4 w-4 text-success" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
+                        <CheckCircle2 className="h-4 w-4 text-amber-500" />
                       </div>
-                      <span className="font-medium">{feature}</span>
+                      <span className="font-medium text-slate-700">{feature}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -206,34 +238,34 @@ const ListingDetails = () => {
 
               {/* Admin Feedback */}
               {listing.adminComment && (
-                <Card className="border-l-4 border-l-warning bg-warning/5 p-8">
+                <Card className="rounded-2xl border-l-4 border-l-amber-500 bg-amber-50/50 p-8">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="rounded-lg bg-warning/10 p-2">
-                      <FileText className="h-5 w-5 text-warning" />
+                    <div className="rounded-lg bg-amber-500/10 p-2">
+                      <FileText className="h-5 w-5 text-amber-600" />
                     </div>
-                    <h3 className="text-xl font-bold">Admin Feedback</h3>
+                    <h3 className="text-xl font-bold text-slate-800">Admin Feedback</h3>
                   </div>
-                  <p className="text-sm leading-relaxed">{listing.adminComment}</p>
+                  <p className="text-sm leading-relaxed text-slate-600">{listing.adminComment}</p>
                 </Card>
               )}
 
               {/* Attachments */}
               {listing.attachments && listing.attachments.length > 0 && (
-                <Card className="gradient-card p-8 shadow-premium">
+                <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-8 shadow-lg">
                   <div className="mb-6 flex items-center gap-3">
-                    <div className="rounded-lg bg-primary/10 p-2">
-                      <FileText className="h-5 w-5 text-primary" />
+                    <div className="rounded-lg bg-amber-500/10 p-2">
+                      <FileText className="h-5 w-5 text-amber-500" />
                     </div>
-                    <h2 className="text-2xl font-bold">Documents</h2>
+                    <h2 className="text-2xl font-bold text-slate-800">Documents</h2>
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
                     {listing.attachments.map((attachment, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-3 rounded-lg border bg-background/50 p-4 transition-colors hover:border-primary"
+                        className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 transition-all duration-300 hover:border-amber-500 hover:shadow-md"
                       >
-                        <FileText className="h-5 w-5 text-primary" />
-                        <span className="text-sm font-medium">{attachment}</span>
+                        <FileText className="h-5 w-5 text-amber-500" />
+                        <span className="text-sm font-medium text-slate-700">{attachment}</span>
                       </div>
                     ))}
                   </div>
@@ -242,32 +274,37 @@ const ListingDetails = () => {
 
               {/* Verification Documents (Admin Only) */}
               {isAdmin && listing.verificationDocuments && listing.verificationDocuments.length > 0 && (
-                <Card className="gradient-card border-2 border-primary/20 p-8 shadow-premium">
+                <Card className="rounded-2xl border-2 border-amber-500/20 bg-white/80 backdrop-blur-sm p-8 shadow-lg">
                   <div className="mb-6 flex items-center gap-3">
-                    <div className="rounded-lg bg-primary/10 p-2">
-                      <Shield className="h-5 w-5 text-primary" />
+                    <div className="rounded-lg bg-amber-500/10 p-2">
+                      <Shield className="h-5 w-5 text-amber-500" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold">Verification Documents</h2>
-                      <p className="text-sm text-muted-foreground">Admin-only view</p>
+                      <h2 className="text-2xl font-bold text-slate-800">Verification Documents</h2>
+                      <p className="text-sm text-slate-600">Admin-only view</p>
                     </div>
                   </div>
                   <div className="space-y-3">
                     {listing.verificationDocuments.map((doc) => (
-                      <Card key={doc.id} className="p-4">
+                      <Card key={doc.id} className="rounded-xl border border-slate-200 p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                              <FileText className="h-5 w-5 text-primary" />
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
+                              <FileText className="h-5 w-5 text-amber-500" />
                             </div>
                             <div>
-                              <p className="font-medium">{doc.name}</p>
-                              <p className="text-xs text-muted-foreground">
+                              <p className="font-medium text-slate-800">{doc.name}</p>
+                              <p className="text-xs text-slate-600">
                                 {(doc.size / 1024).toFixed(2)} KB • Uploaded {new Date(doc.uploadedAt).toLocaleDateString()}
                               </p>
                             </div>
                           </div>
-                          <Button variant="outline" size="sm" asChild>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            asChild
+                            className="border-amber-500 text-amber-600 hover:bg-amber-50"
+                          >
                             <a href={doc.url} download={doc.name}>
                               <Download className="mr-2 h-4 w-4" />
                               Download
@@ -290,14 +327,14 @@ const ListingDetails = () => {
               transition={{ delay: 0.2 }}
             >
               {/* Company Card */}
-              <Card className="gradient-card overflow-hidden shadow-premium">
-                <div className="bg-gradient-to-br from-primary to-primary-hover p-6 text-primary-foreground">
+              <Card className="rounded-2xl overflow-hidden border border-slate-200 bg-white/80 backdrop-blur-sm shadow-lg">
+                <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-white">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur">
                       <Building2 className="h-6 w-6" />
                     </div>
                     <div>
-                      <p className="text-sm opacity-90">Posted by</p>
+                      <p className="text-sm text-slate-300">Posted by</p>
                       <h3 className="text-xl font-bold">{listing.companyName}</h3>
                     </div>
                   </div>
@@ -305,36 +342,36 @@ const ListingDetails = () => {
 
                 <div className="space-y-6 p-6">
                   <div>
-                    <h4 className="mb-4 font-semibold">Company Information</h4>
+                    <h4 className="mb-4 font-semibold text-slate-800">Company Information</h4>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3 text-sm">
-                        <Mail className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                        <Mail className="mt-0.5 h-4 w-4 text-slate-500" />
                         <div>
-                          <p className="text-xs text-muted-foreground">Email</p>
-                          <p className="font-medium">contact@company.com</p>
+                          <p className="text-xs text-slate-500">Email</p>
+                          <p className="font-medium text-slate-700">contact@company.com</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 text-sm">
-                        <Phone className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                        <Phone className="mt-0.5 h-4 w-4 text-slate-500" />
                         <div>
-                          <p className="text-xs text-muted-foreground">Phone</p>
-                          <p className="font-medium">+1 (555) 123-4567</p>
+                          <p className="text-xs text-slate-500">Phone</p>
+                          <p className="font-medium text-slate-700">+1 (555) 123-4567</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 text-sm">
-                        <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                        <MapPin className="mt-0.5 h-4 w-4 text-slate-500" />
                         <div>
-                          <p className="text-xs text-muted-foreground">Location</p>
-                          <p className="font-medium">San Francisco, CA</p>
+                          <p className="text-xs text-slate-500">Location</p>
+                          <p className="font-medium text-slate-700">San Francisco, CA</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 text-sm">
-                        <Globe className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                        <Globe className="mt-0.5 h-4 w-4 text-slate-500" />
                         <div>
-                          <p className="text-xs text-muted-foreground">Website</p>
+                          <p className="text-xs text-slate-500">Website</p>
                           <Link
                             to="#"
-                            className="font-medium text-primary hover:underline"
+                            className="font-medium text-amber-600 hover:text-amber-700 hover:underline"
                           >
                             www.company.com
                           </Link>
@@ -343,55 +380,59 @@ const ListingDetails = () => {
                     </div>
                   </div>
 
-                  <Separator />
+                  <Separator className="bg-slate-200" />
 
                   <div>
-                    <h4 className="mb-4 font-semibold">Company Stats</h4>
+                    <h4 className="mb-4 font-semibold text-slate-800">Company Stats</h4>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="rounded-lg bg-primary/5 p-4 text-center">
+                      <div className="rounded-xl bg-amber-500/5 p-4 text-center">
                         <div className="mb-1 flex items-center justify-center">
-                          <TrendingUp className="h-5 w-5 text-primary" />
+                          <TrendingUp className="h-5 w-5 text-amber-500" />
                         </div>
-                        <p className="text-2xl font-bold text-primary">3</p>
-                        <p className="text-xs text-muted-foreground">Active Listings</p>
+                        <p className="text-2xl font-bold text-amber-500">3</p>
+                        <p className="text-xs text-slate-600">Active Listings</p>
                       </div>
-                      <div className="rounded-lg bg-success/5 p-4 text-center">
+                      <div className="rounded-xl bg-amber-500/5 p-4 text-center">
                         <div className="mb-1 flex items-center justify-center">
-                          <Users className="h-5 w-5 text-success" />
+                          <Users className="h-5 w-5 text-amber-500" />
                         </div>
-                        <p className="text-2xl font-bold text-success">50+</p>
-                        <p className="text-xs text-muted-foreground">Clients Served</p>
+                        <p className="text-2xl font-bold text-amber-500">50+</p>
+                        <p className="text-xs text-slate-600">Clients Served</p>
                       </div>
                     </div>
                   </div>
 
-                  <Button className="w-full shadow-md" size="lg">
+                  <Button 
+                    className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
+                    size="lg"
+                  >
                     Contact Company
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </div>
               </Card>
 
               {/* Trust Badges */}
-              <Card className="gradient-card p-6 shadow-premium">
-                <h4 className="mb-4 font-semibold">Verified & Trusted</h4>
+              <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-6 shadow-lg">
+                <h4 className="mb-4 font-semibold text-slate-800">Verified & Trusted</h4>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-success/10">
-                      <CheckCircle2 className="h-4 w-4 text-success" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
+                      <CheckCircle2 className="h-4 w-4 text-amber-500" />
                     </div>
-                    <span className="font-medium">Admin Verified</span>
+                    <span className="font-medium text-slate-700">Admin Verified</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                      <Award className="h-4 w-4 text-primary" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
+                      <Award className="h-4 w-4 text-amber-500" />
                     </div>
-                    <span className="font-medium">Premium Member</span>
+                    <span className="font-medium text-slate-700">Premium Member</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                      <Star className="h-4 w-4 text-primary" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
+                      <Star className="h-4 w-4 text-amber-500" />
                     </div>
-                    <span className="font-medium">5 Star Rating</span>
+                    <span className="font-medium text-slate-700">5 Star Rating</span>
                   </div>
                 </div>
               </Card>
@@ -399,6 +440,35 @@ const ListingDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* CTA Section */}
+      <section className="py-24 bg-gradient-to-r from-slate-900 to-slate-800 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2
+              className="mb-4 text-3xl md:text-4xl font-bold"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              Ready to List Your Business?
+            </h2>
+            <p className="mb-10 text-lg text-slate-300 max-w-2xl mx-auto">
+              Join thousands of businesses already growing with ProMart.
+            </p>
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold px-8 py-6 text-lg shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
+              onClick={() => navigate('/register')}
+            >
+              Get Started Today
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </motion.div>
+        </div>
+      </section>
 
       <Footer />
     </div>

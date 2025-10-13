@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -100,17 +101,22 @@ const Blog = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-hover to-primary py-20">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-20 text-white">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-center lg:text-left text-primary-foreground"
+              className="text-center lg:text-left"
             >
-              <h1 className="mb-6 text-5xl font-bold tracking-tight">ProMart Blog</h1>
-              <p className="text-xl opacity-95">
+              <h1 
+                className="mb-6 text-5xl font-bold tracking-tight"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                ProMart Blog
+              </h1>
+              <p className="text-xl text-slate-300">
                 Insights, tips, and success stories from the B2B marketplace
               </p>
             </motion.div>
@@ -126,10 +132,25 @@ const Blog = () => {
             )}
           </div>
         </div>
+        
+        {/* Wave divider */}
+        <div className="absolute -bottom-1 left-0 right-0">
+          <svg
+            viewBox="0 0 1440 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="text-background"
+          >
+            <path
+              d="M0 120L1440 120L1440 0C1440 0 1080 80 720 80C360 80 0 0 0 0L0 120Z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
       </section>
 
       {/* Categories */}
-      <section className="border-b bg-muted/30 py-6">
+      <section className="border-b bg-gradient-to-br from-slate-50 to-amber-50/20 py-6">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-2">
             {categories.map((category) => (
@@ -138,6 +159,11 @@ const Blog = () => {
                 variant={category === selectedCategory ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
+                className={
+                  category === selectedCategory 
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold border-0' 
+                    : 'border-slate-300 text-slate-700 hover:bg-slate-100'
+                }
               >
                 {category}
               </Button>
@@ -147,15 +173,17 @@ const Blog = () => {
       </section>
 
       {/* Featured Post */}
-      <section className="py-12">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Badge className="mb-4">Featured Post</Badge>
-            <Card className="gradient-card overflow-hidden shadow-premium">
+            <Badge className="mb-4 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 border-0">
+              Featured Post
+            </Badge>
+            <Card className="rounded-2xl overflow-hidden border border-slate-200 bg-white/80 backdrop-blur-sm shadow-lg">
               <div className="grid md:grid-cols-2">
                 <div className="relative h-80 md:h-auto">
                   <img
@@ -165,12 +193,12 @@ const Blog = () => {
                   />
                 </div>
                 <div className="flex flex-col justify-center p-8">
-                  <Badge variant="secondary" className="mb-4 w-fit">
+                  <Badge variant="secondary" className="mb-4 w-fit bg-slate-100 text-slate-700">
                     {blogPosts[0].category}
                   </Badge>
-                  <h2 className="mb-4 text-3xl font-bold">{blogPosts[0].title}</h2>
-                  <p className="mb-6 text-muted-foreground">{blogPosts[0].excerpt}</p>
-                  <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                  <h2 className="mb-4 text-3xl font-bold text-slate-800">{blogPosts[0].title}</h2>
+                  <p className="mb-6 text-slate-600">{blogPosts[0].excerpt}</p>
+                  <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-slate-500">
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4" />
                       {blogPosts[0].author}
@@ -185,9 +213,9 @@ const Blog = () => {
                     </div>
                   </div>
                   <Link to={`/blog/${blogPosts[0].id}`}>
-                    <Button className="w-fit">
+                    <Button className="w-fit bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group">
                       Read More
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
                 </div>
@@ -198,12 +226,17 @@ const Blog = () => {
       </section>
 
       {/* Blog Grid */}
-      <section className="py-12">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="mb-8 text-3xl font-bold">Latest Articles</h2>
+          <h2 
+            className="mb-8 text-3xl font-bold text-slate-800"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            Latest Articles
+          </h2>
           {filteredPosts.length === 0 ? (
-            <Card className="p-12 text-center">
-              <p className="text-muted-foreground">No articles found in this category</p>
+            <Card className="p-12 text-center rounded-2xl border-slate-200 bg-white/80 backdrop-blur-sm">
+              <p className="text-slate-600">No articles found in this category</p>
             </Card>
           ) : (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -215,7 +248,7 @@ const Blog = () => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="gradient-card group h-full overflow-hidden shadow-md transition-all hover:shadow-premium">
+                  <Card className="group h-full rounded-2xl overflow-hidden border border-slate-200 bg-white/80 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     <div className="relative h-48 overflow-hidden">
                       <img
                         src={post.image}
@@ -224,16 +257,16 @@ const Blog = () => {
                       />
                     </div>
                     <div className="p-6">
-                      <Badge variant="secondary" className="mb-3">
+                      <Badge variant="secondary" className="mb-3 bg-slate-100 text-slate-700">
                         {post.category}
                       </Badge>
-                      <h3 className="mb-3 text-xl font-semibold group-hover:text-primary">
+                      <h3 className="mb-3 text-xl font-semibold text-slate-800 group-hover:text-amber-600 transition-colors">
                         {post.title}
                       </h3>
-                      <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
+                      <p className="mb-4 line-clamp-2 text-sm text-slate-600">
                         {post.excerpt}
                       </p>
-                      <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      <div className="mb-4 flex flex-wrap items-center gap-3 text-xs text-slate-500">
                         <div className="flex items-center gap-1">
                           <User className="h-3 w-3" />
                           {post.author}
@@ -248,7 +281,7 @@ const Blog = () => {
                         </div>
                       </div>
                       <Link to={`/blog/${post.id}`}>
-                        <Button variant="ghost" className="group -ml-4 p-0">
+                        <Button variant="ghost" className="group -ml-4 p-0 text-amber-600 hover:text-amber-700 hover:bg-transparent">
                           Read More
                           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>
@@ -263,7 +296,7 @@ const Blog = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="border-t bg-gradient-to-br from-muted/30 to-background py-16">
+      <section className="border-t bg-gradient-to-br from-slate-50 to-amber-50/20 py-16 ">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -271,18 +304,57 @@ const Blog = () => {
             viewport={{ once: true }}
             className="mx-auto max-w-2xl text-center"
           >
-            <h2 className="mb-4 text-3xl font-bold">Stay Updated</h2>
-            <p className="mb-6 text-muted-foreground">
+            <h2 
+              className="mb-4 text-3xl font-bold text-slate-800"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              Stay Updated
+            </h2>
+            <p className="mb-6 text-slate-600">
               Subscribe to our newsletter for the latest B2B insights and success stories
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-              <input
+              <Input
                 type="email"
                 placeholder="Enter your email"
-                className="rounded-lg border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary sm:w-80"
+                className="rounded-xl border-slate-300 bg-white px-4 py-3 text-sm focus:border-amber-500 focus:ring-amber-500 sm:w-80"
               />
-              <Button size="lg">Subscribe</Button>
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40"
+              >
+                Subscribe
+              </Button>
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 bg-gradient-to-r from-slate-900 to-slate-800 text-white mb-5">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2
+              className="mb-4 text-3xl md:text-4xl font-bold"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              Ready to Grow Your Business?
+            </h2>
+            <p className="mb-10 text-lg text-slate-300 max-w-2xl mx-auto">
+              Join thousands of businesses already succeeding with ProMart.
+            </p>
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold px-8 py-6 text-lg shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
+              onClick={() => window.location.href = '/register'}
+            >
+              Get Started Today
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
           </motion.div>
         </div>
       </section>

@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, Phone, MapPin, Clock, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, MessageSquare, ArrowRight } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Lottie from 'lottie-react';
@@ -75,19 +75,24 @@ const Contact = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-hover to-primary py-20">
+      {/* Hero Section - Matching Index page */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-20 text-white">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-center lg:text-left text-primary-foreground"
+              className="text-center lg:text-left"
             >
-              <MessageSquare className="mb-6 h-16 w-16 lg:mx-0 mx-auto" />
-              <h1 className="mb-6 text-5xl font-bold tracking-tight">Get in Touch</h1>
-              <p className="text-xl opacity-95">
+              <MessageSquare className="mb-6 h-16 w-16 lg:mx-0 mx-auto text-amber-400" />
+              <h1 
+                className="mb-6 text-5xl font-bold tracking-tight"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Get in Touch
+              </h1>
+              <p className="text-xl text-slate-300">
                 Have questions? We'd love to hear from you. Send us a message and we'll respond
                 as soon as possible.
               </p>
@@ -104,10 +109,25 @@ const Contact = () => {
             )}
           </div>
         </div>
+        
+        {/* Wave divider like Index page */}
+        <div className="absolute -bottom-1 left-0 right-0">
+          <svg
+            viewBox="0 0 1440 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="text-background"
+          >
+            <path
+              d="M0 120L1440 120L1440 0C1440 0 1080 80 720 80C360 80 0 0 0 0L0 120Z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
       </section>
 
       {/* Contact Section */}
-      <section className="py-20">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid gap-12 lg:grid-cols-3">
             {/* Contact Info */}
@@ -119,8 +139,8 @@ const Contact = () => {
                 className="space-y-6"
               >
                 <div>
-                  <h2 className="mb-4 text-2xl font-bold">Contact Information</h2>
-                  <p className="text-muted-foreground">
+                  <h2 className="mb-4 text-2xl font-bold text-slate-800">Contact Information</h2>
+                  <p className="text-slate-600">
                     Reach out to us through any of these channels
                   </p>
                 </div>
@@ -129,33 +149,31 @@ const Contact = () => {
                   {contactInfo.map((info, index) => (
                     <Card
                       key={info.title}
-                      className="gradient-card p-6 shadow-md transition-all hover:shadow-lg"
+                      className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                     >
                       <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                          <info.icon className="h-6 w-6 text-primary" />
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-500/10">
+                          <info.icon className="h-6 w-6 text-amber-500" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="mb-1 font-semibold">{info.title}</h3>
+                          <h3 className="mb-1 font-semibold text-slate-800">{info.title}</h3>
                           {info.link ? (
                             <a
                               href={info.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sm text-muted-foreground hover:text-primary"
+                              className="text-sm text-slate-600 hover:text-amber-500 transition-colors"
                             >
                               {info.detail}
                             </a>
                           ) : (
-                            <p className="text-sm text-muted-foreground">{info.detail}</p>
+                            <p className="text-sm text-slate-600">{info.detail}</p>
                           )}
                         </div>
                       </div>
                     </Card>
                   ))}
                 </div>
-
-              
               </motion.div>
             </div>
 
@@ -166,13 +184,13 @@ const Contact = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <Card className="gradient-card p-8 shadow-premium">
-                  <h2 className="mb-6 text-2xl font-bold">Send Us a Message</h2>
+                <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-8 shadow-lg">
+                  <h2 className="mb-6 text-2xl font-bold text-slate-800">Send Us a Message</h2>
 
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid gap-6 md:grid-cols-2">
                       <div>
-                        <Label htmlFor="name">Your Name *</Label>
+                        <Label htmlFor="name" className="text-slate-800">Your Name *</Label>
                         <Input
                           id="name"
                           value={formData.name}
@@ -181,11 +199,12 @@ const Contact = () => {
                           }
                           required
                           placeholder="John Doe"
+                          className="border-slate-300 focus:border-amber-500 focus:ring-amber-500"
                         />
                       </div>
 
                       <div>
-                        <Label htmlFor="email">Email Address *</Label>
+                        <Label htmlFor="email" className="text-slate-800">Email Address *</Label>
                         <Input
                           id="email"
                           type="email"
@@ -195,12 +214,13 @@ const Contact = () => {
                           }
                           required
                           placeholder="john@company.com"
+                          className="border-slate-300 focus:border-amber-500 focus:ring-amber-500"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="subject">Subject *</Label>
+                      <Label htmlFor="subject" className="text-slate-800">Subject *</Label>
                       <Input
                         id="subject"
                         value={formData.subject}
@@ -209,11 +229,12 @@ const Contact = () => {
                         }
                         required
                         placeholder="How can we help you?"
+                        className="border-slate-300 focus:border-amber-500 focus:ring-amber-500"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="message">Message *</Label>
+                      <Label htmlFor="message" className="text-slate-800">Message *</Label>
                       <Textarea
                         id="message"
                         value={formData.message}
@@ -223,14 +244,25 @@ const Contact = () => {
                         required
                         placeholder="Tell us more about your inquiry..."
                         rows={8}
+                        className="border-slate-300 focus:border-amber-500 focus:ring-amber-500"
                       />
                     </div>
 
-                    <Button type="submit" disabled={loading} className="w-full" size="lg">
-                      {loading ? 'Sending...' : 'Send Message'}
+                    <Button 
+                      type="submit" 
+                      disabled={loading} 
+                      className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group" 
+                      size="lg"
+                    >
+                      {loading ? 'Sending...' : (
+                        <>
+                          Send Message
+                          <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
                     </Button>
 
-                    <p className="text-center text-sm text-muted-foreground">
+                    <p className="text-center text-sm text-slate-600">
                       We typically respond within 24 hours
                     </p>
                   </form>
@@ -241,17 +273,17 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Map Section (Optional) */}
-      <section className="border-t bg-muted/30 py-16">
+      {/* Map Section */}
+      <section className="border-t bg-gradient-to-br from-slate-50 to-amber-50/20 py-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl text-center">
-            <h2 className="mb-4 text-3xl font-bold">Visit Our Office</h2>
-            <p className="mb-8 text-muted-foreground">
+            <h2 className="mb-4 text-3xl font-bold text-slate-800">Visit Our Office</h2>
+            <p className="mb-8 text-slate-600">
               We welcome you to visit our headquarters in San Francisco
             </p>
-            <div className="overflow-hidden rounded-lg shadow-lg">
+            <div className="overflow-hidden rounded-2xl shadow-lg">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0977641932937!2d-122.41941668468186!3d37.77492997975903!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sTwitter%20HQ!5e0!3m2!1sen!2sus!4v1619721181829!5m2!1sen!2sus"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0977641932937!2d-122.41941648468186!3d37.77492997975903!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sTwitter%20HQ!5e0!3m2!1sen!2sus!4v1619721181829!5m2!1sen!2sus"
                 width="100%"
                 height="400"
                 style={{ border: 0 }}
@@ -261,6 +293,35 @@ const Contact = () => {
               ></iframe>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* CTA Section - Matching Index page */}
+      <section className="py-24 bg-gradient-to-r from-slate-900 to-slate-800 text-white mb-5">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2
+              className="mb-4 text-3xl md:text-4xl font-bold"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              Ready to Get Started?
+            </h2>
+            <p className="mb-10 text-lg text-slate-300 max-w-2xl mx-auto">
+              Join thousands of professionals already growing with ProMart.
+            </p>
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold px-8 py-6 text-lg shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
+              onClick={() => window.location.href = '/register'}
+            >
+              Start Free Today
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </motion.div>
         </div>
       </section>
 
