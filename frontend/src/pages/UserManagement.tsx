@@ -8,8 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { useToast } from '@/hooks/use-toast';
 import { User } from '@/types';
 import { Search, UserCog, Mail, Phone, Building2, Shield, UserX } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+
 
 const UserManagement = () => {
   const { toast } = useToast();
@@ -80,7 +79,7 @@ const UserManagement = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      
 
       <div className="container mx-auto px-4 py-8">
         <motion.div
@@ -295,7 +294,7 @@ const UserManagement = () => {
         </DialogContent>
       </Dialog>
 
-      <Footer />
+ 
     </div>
   );
 };

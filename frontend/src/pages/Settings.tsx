@@ -8,8 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { User, Lock, Building2 } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+
 
 const Settings = () => {
   const { user } = useAuth();
@@ -82,7 +81,7 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+ 
       
       <div className="container mx-auto px-4 py-8">
         <motion.div
@@ -252,7 +251,7 @@ const Settings = () => {
         </motion.div>
       </div>
 
-      <Footer />
+      
     </div>
   );
 };

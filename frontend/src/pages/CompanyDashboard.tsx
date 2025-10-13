@@ -10,13 +10,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import mockApi from '@/services/mockApi';
 import { Listing, Notification, VerificationDocument } from '@/types';
-import { Plus, FileText, Megaphone, Eye, Upload, X, File, LayoutDashboard, Settings } from 'lucide-react';
+import { Plus, FileText, Megaphone, Eye, Upload, X, File, LayoutDashboard, Settings as SettingsIcon } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import StatusBadge from '@/components/StatusBadge';
 import NotificationCenter from '@/components/NotificationCenter';
 import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router-dom';
 import Footer from '@/components/Footer';
+import Settings from './Settings';
 
 const CompanyDashboard = () => {
   const { user } = useAuth();
@@ -157,7 +158,7 @@ const CompanyDashboard = () => {
                 className="w-full justify-start"
                 onClick={() => setActiveSection('settings')}
               >
-                <Settings className="mr-2 h-4 w-4" />
+                <SettingsIcon className="mr-2 h-4 w-4" />
                 Account Settings
               </Button>
             </nav>
@@ -418,124 +419,7 @@ const CompanyDashboard = () => {
         </div>
       )}
 
-      {activeSection === 'settings' && (
-              <div className="space-y-6">
-                <div>
-                  <h1 className="text-3xl font-bold">Account Settings</h1>
-                  <p className="text-muted-foreground">Manage your company profile and preferences</p>
-                </div>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Company Profile</CardTitle>
-                    <CardDescription>Your business information</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <Label>Company Name</Label>
-                      <p className="text-sm text-muted-foreground">{user?.companyName}</p>
-                    </div>
-                    <div>
-                      <Label>Email Address</Label>
-                      <p className="text-sm text-muted-foreground">{user?.email}</p>
-                    </div>
-                    <div>
-                      <Label>Phone Number</Label>
-                      <p className="text-sm text-muted-foreground">{user?.phone}</p>
-                    </div>
-                    <div>
-                      <Label>Account Type</Label>
-                      <p className="text-sm text-muted-foreground">Company Account</p>
-                    </div>
-                    <div>
-                      <Label>Account Status</Label>
-                      <p className="text-sm text-success">Active</p>
-                    </div>
-                    <Button variant="outline" className="mt-4">
-                      Edit Profile
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Notification Preferences</CardTitle>
-                    <CardDescription>Choose how you want to be notified</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Email Notifications</p>
-                        <p className="text-sm text-muted-foreground">Receive updates about your listings</p>
-                      </div>
-                      <Switch defaultChecked />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Listing Status Updates</p>
-                        <p className="text-sm text-muted-foreground">Get notified when listings are approved/rejected</p>
-                      </div>
-                      <Switch defaultChecked />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Marketing Emails</p>
-                        <p className="text-sm text-muted-foreground">Receive promotional offers and tips</p>
-                      </div>
-                      <Switch />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Listing Statistics</CardTitle>
-                    <CardDescription>Overview of your listing performance</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Total Listings</span>
-                        <span className="font-semibold">{listings.length}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Approved</span>
-                        <span className="font-semibold text-success">
-                          {listings.filter(l => l.status === 'approved').length}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Pending</span>
-                        <span className="font-semibold text-warning">
-                          {listings.filter(l => l.status === 'pending').length}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Rejected</span>
-                        <span className="font-semibold text-destructive">
-                          {listings.filter(l => l.status === 'rejected').length}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Account Actions</CardTitle>
-                    <CardDescription>Manage your account</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Button variant="outline" className="w-full justify-start">
-                      Change Password
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                      Delete Account
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+      {activeSection === 'settings' && <Settings/>}
           </motion.div>
         </main>
       </div>
