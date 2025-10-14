@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import mockApi from '@/services/mockApi';
+import { sendOTP } from '@/services/api';
 import logo from '@/assets/promart-logo.png';
 import Lottie from 'lottie-react';
 import { ArrowRight, Building2, Mail, Phone, Lock } from 'lucide-react';
@@ -32,29 +32,27 @@ const Register = () => {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      // First send OTP
-      await mockApi.sendOTP(formData.phone);
-      toast({
-        title: 'OTP Sent',
-        description: 'Check your phone for the verification code',
-      });
-      
-      // Navigate to OTP verification with form data
-      navigate('/verify-otp', { state: formData });
-    } catch (error) {
-      toast({
-        title: 'Registration failed',
-        description: 'Please try again',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    await sendOTP(formData.email);
+    toast({
+      title: 'OTP Sent',
+      description: 'Check your email for the verification code',
+    });
+    navigate('/verify-otp', { state: formData });
+  } catch (error) {
+    toast({
+      title: 'Error',
+      description: error.response?.data?.message || 'Failed to send OTP',
+      variant: 'destructive',
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-background to-amber-50/20">

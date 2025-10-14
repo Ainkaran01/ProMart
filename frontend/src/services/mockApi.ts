@@ -61,42 +61,6 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Mock API client
 const mockApi = {
-  // Auth endpoints
-  async sendOTP(phoneOrEmail: string): Promise<{ success: boolean }> {
-    await delay(1000);
-    console.log('OTP sent to:', phoneOrEmail);
-    return { success: true };
-  },
-
-  async verifyOTP(phoneOrEmail: string, otp: string): Promise<{ success: boolean; token: string }> {
-    await delay(1000);
-    console.log('Verifying OTP:', otp, 'for', phoneOrEmail);
-    // Mock: accept any 6-digit OTP
-    if (otp.length === 6) {
-      return { success: true, token: 'mock-token-' + Date.now() };
-    }
-    throw new Error('Invalid OTP');
-  },
-
-  async register(data: { email: string; phone: string; companyName: string; password: string }): Promise<User> {
-    await delay(1000);
-    const newUser: User = {
-      id: 'company-' + Date.now(),
-      email: data.email,
-      phone: data.phone,
-      role: 'company',
-      companyName: data.companyName,
-    };
-    users.push(newUser);
-    return newUser;
-  },
-
-  async login(email: string, password: string): Promise<User> {
-    await delay(1000);
-    const user = users.find(u => u.email === email);
-    if (!user) throw new Error('User not found');
-    return user;
-  },
 
   // Listing endpoints
   async createListing(listing: Omit<Listing, 'id' | 'status' | 'createdAt'>): Promise<Listing> {

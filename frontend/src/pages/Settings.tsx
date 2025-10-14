@@ -19,8 +19,10 @@ const Settings = () => {
     email: user?.email || '',
     phone: user?.phone || '',
     companyName: user?.companyName || '',
-  });
 
+    
+  });
+console.log(user?.phone);
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -130,6 +132,7 @@ const Settings = () => {
                     onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                     required
                   />
+                  
                 </div>
 
                 {user?.role === 'company' && (

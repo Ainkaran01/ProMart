@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
-import mockApi from '@/services/mockApi';
+import { loginUser } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import logo from '@/assets/promart-logo.png';
 import Lottie from 'lottie-react';
@@ -30,28 +30,36 @@ const Login = () => {
       .catch(() => console.log('Animation loading failed'));
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const user = await mockApi.login(email, password);
-      login(user);
-      toast({
-        title: 'Welcome back!',
-        description: 'Successfully logged in',
-      });
-      navigate(user.role === 'admin' ? '/admin' : '/dashboard');
-    } catch (error) {
-      toast({
-        title: 'Login failed',
-        description: 'Invalid credentials. Try: admin@promart.com or company@example.com',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+ try {
+  const response = await loginUser({ email, password });
+  // Backend returns the full user object directly, not nested
+  const user = response;
+
+  // Save user + token
+  login(user);
+
+  toast({
+    title: 'Welcome back!',
+    description: 'Successfully logged in',
+  });
+
+  navigate(user.role === 'admin' ? '/admin' : '/dashboard');
+} catch (error: any) {
+  toast({
+    title: 'Login failed',
+    description: error.response?.data?.message || 'Something went wrong',
+    variant: 'destructive',
+  });
+}
+ finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-background to-amber-50/20">
