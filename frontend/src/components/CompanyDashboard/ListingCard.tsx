@@ -18,7 +18,7 @@ const ListingCard = ({ listing }) => {
           <p className="mb-2 text-sm text-muted-foreground">{listing.description}</p>
           <p className="text-xs text-muted-foreground">Category: {listing.category}</p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => navigate(`/listings/${listing.id}`)}>
+        <Button variant="outline" size="sm" onClick={() => navigate(`/listings/${listing._id}`)}>
           <Eye className="mr-2 h-4 w-4" /> View Details
         </Button>
       </div>

@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, X, File, Image as ImageIcon, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import mockApi from "@/services/mockApi";
+import { createListing } from "@/services/listingService";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface CreateListingModalProps {
@@ -33,6 +33,8 @@ const CreateListingModal = ({
     title: "",
     description: "",
     category: "",
+    location: "",
+    website: "",
     keyFeatures: [] as string[],
   });
   const [featureInput, setFeatureInput] = useState("");
@@ -92,6 +94,8 @@ const CreateListingModal = ({
         title: "",
         description: "",
         category: "",
+        location: "",
+        website: "",
         keyFeatures: [],
       });
       setFeatureInput("");
@@ -108,33 +112,17 @@ const CreateListingModal = ({
 
     setLoading(true);
     try {
-      const uploadedDocs = verificationDocs.map((file, index) => ({
-        id: "doc-" + Date.now() + "-" + index,
-        name: file.name,
-        url: URL.createObjectURL(file),
-        type: file.type,
-        size: file.size,
-        uploadedAt: new Date().toISOString(),
-      }));
-
-      const uploadedImages = companyImages.map((file, index) => ({
-        id: "img-" + Date.now() + "-" + index,
-        name: file.name,
-        url: URL.createObjectURL(file),
-        type: file.type,
-        size: file.size,
-        uploadedAt: new Date().toISOString(),
-      }));
-
-      await mockApi.createListing({
-        companyId: user.id,
-        companyName: user.companyName!,
+      await createListing({
+        companyId: user._id,
+        companyName: user.companyName,
         title: formData.title,
         description: formData.description,
+        location: formData.location,
+        website: formData.website,
         category: formData.category,
         keyFeatures: formData.keyFeatures,
-        verificationDocuments: uploadedDocs,
-        attachments: uploadedImages.map((img) => img.url),
+        verificationDocuments: verificationDocs, // you can upload file URLs later
+        attachments: companyImages, // images as file URLs or upload URLs
       });
 
       toast({
@@ -147,6 +135,8 @@ const CreateListingModal = ({
         title: "",
         description: "",
         category: "",
+        location: "",
+        website: "",
         keyFeatures: [],
       });
       setVerificationDocs([]);
@@ -169,7 +159,9 @@ const CreateListingModal = ({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto mx-2 sm:mx-4">
         <DialogHeader className="px-1 sm:px-0">
-          <DialogTitle className="text-lg sm:text-xl">Create New Listing</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
+            Create New Listing
+          </DialogTitle>
         </DialogHeader>
 
         {/* ✅ Responsive Grid Form */}
@@ -179,7 +171,9 @@ const CreateListingModal = ({
         >
           {/* 🏷️ Title */}
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-sm sm:text-base">Title</Label>
+            <Label htmlFor="title" className="text-sm sm:text-base">
+              Title
+            </Label>
             <Input
               id="title"
               value={formData.title}
@@ -194,7 +188,9 @@ const CreateListingModal = ({
 
           {/* 🗂️ Category */}
           <div className="space-y-2">
-            <Label htmlFor="category" className="text-sm sm:text-base">Category</Label>
+            <Label htmlFor="category" className="text-sm sm:text-base">
+              Category
+            </Label>
             <Input
               id="category"
               value={formData.category}
@@ -209,7 +205,9 @@ const CreateListingModal = ({
 
           {/* 📝 Description */}
           <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="description" className="text-sm sm:text-base">Description</Label>
+            <Label htmlFor="description" className="text-sm sm:text-base">
+              Description
+            </Label>
             <Textarea
               id="description"
               value={formData.description}
@@ -223,13 +221,47 @@ const CreateListingModal = ({
             />
           </div>
 
+          {/*  Location */}
+          <div className="space-y-2">
+            <Label htmlFor="location" className="text-sm sm:text-base">
+              Company Location
+            </Label>
+            <Input
+              id="location"
+              value={formData.location}
+              onChange={(e) =>
+                setFormData({ ...formData, location: e.target.value })
+              }
+              required
+              placeholder="Enter company location"
+              className="text-sm sm:text-base"
+            />
+          </div>
+
+          {/*  Website */}
+          <div className="space-y-2">
+            <Label htmlFor="website" className="text-sm sm:text-base">
+              Website URL
+            </Label>
+            <Input
+              id="website"
+              value={formData.website}
+              onChange={(e) =>
+                setFormData({ ...formData, website: e.target.value })
+              }
+              required
+              placeholder="Enter company website"
+              className="text-sm sm:text-base"
+            />
+          </div>
           {/* 🌟 Key Features */}
           <div className="md:col-span-2 space-y-3">
             <Label htmlFor="keyFeatures" className="text-sm sm:text-base block">
               Key Features
             </Label>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Highlight what makes your company stand out (e.g., "Fast Delivery", "Certified Experts")
+              Highlight what makes your company stand out (e.g., "Fast
+              Delivery", "Certified Experts")
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -259,7 +291,9 @@ const CreateListingModal = ({
                     key={index}
                     className="flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-xs sm:text-sm text-amber-800 max-w-full"
                   >
-                    <span className="truncate max-w-[120px] sm:max-w-none">{feature}</span>
+                    <span className="truncate max-w-[120px] sm:max-w-none">
+                      {feature}
+                    </span>
                     <button
                       type="button"
                       onClick={() => removeFeature(index)}
@@ -279,11 +313,15 @@ const CreateListingModal = ({
             {/* 📑 Verification Documents */}
             <div className="space-y-3">
               <div>
-                <Label htmlFor="verificationDocs" className="text-sm sm:text-base block">
+                <Label
+                  htmlFor="verificationDocs"
+                  className="text-sm sm:text-base block"
+                >
                   Verification Documents *
                 </Label>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  Upload business license, certificates, or other verification documents
+                  Upload business license, certificates, or other verification
+                  documents
                 </p>
               </div>
 
@@ -302,7 +340,9 @@ const CreateListingModal = ({
                     className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/50 p-3 sm:p-4 transition-colors hover:border-primary hover:bg-muted text-center"
                   >
                     <Upload className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="text-xs sm:text-sm font-medium">Choose Files</span>
+                    <span className="text-xs sm:text-sm font-medium">
+                      Choose Files
+                    </span>
                   </Label>
                 </div>
 
@@ -316,7 +356,9 @@ const CreateListingModal = ({
                         <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                           <File className="h-4 w-4 text-primary flex-shrink-0" />
                           <div className="min-w-0 flex-1">
-                            <p className="text-xs sm:text-sm font-medium truncate">{file.name}</p>
+                            <p className="text-xs sm:text-sm font-medium truncate">
+                              {file.name}
+                            </p>
                             <p className="text-xs text-muted-foreground">
                               {(file.size / 1024).toFixed(2)} KB
                             </p>
@@ -341,11 +383,15 @@ const CreateListingModal = ({
             {/* 🖼️ Company Images */}
             <div className="space-y-3">
               <div>
-                <Label htmlFor="companyImages" className="text-sm sm:text-base block">
+                <Label
+                  htmlFor="companyImages"
+                  className="text-sm sm:text-base block"
+                >
                   Company Images
                 </Label>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  Upload company photos, logos, or marketing images for your listing
+                  Upload company photos, logos, or marketing images for your
+                  listing
                 </p>
               </div>
 
@@ -364,7 +410,9 @@ const CreateListingModal = ({
                     className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/50 p-3 sm:p-4 transition-colors hover:border-primary hover:bg-muted text-center"
                   >
                     <ImageIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="text-xs sm:text-sm font-medium">Upload Images</span>
+                    <span className="text-xs sm:text-sm font-medium">
+                      Upload Images
+                    </span>
                   </Label>
                 </div>
 

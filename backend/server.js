@@ -14,7 +14,7 @@ import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 // import adminRoutes from "./routes/adminRoutes.js";
 // import companyRoutes from "./routes/companyRoutes.js"; 
 // import documentRoutes from "./routes/documentRoutes.js";
-// import listingRoutes from "./routes/listingRoutes.js";
+ import listingRoutes from "./routes/listingRoutes.js";
 // import notificationRoutes from "./routes/notificationRoutes.js";
 
 dotenv.config();
@@ -33,19 +33,27 @@ if (NODE_ENV === "development") app.use(morgan("dev"));
 
 app.use(express.json()); // Parse JSON request body
 
+// Static Uploads
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use("/uploads", (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+}, express.static(path.join(__dirname, "/uploads")));
+
+
 // API Routes
  app.use("/api/auth", authRoutes);
  app.use("/api/otp", otpRoutes);
 // app.use("/api/admin", adminRoutes);
 // app.use("/api/companies", companyRoutes);
 // app.use("/api/documents", documentRoutes);
-// app.use("/api/listings", listingRoutes);
+ app.use("/api/listings", listingRoutes);
+ 
 // app.use("/api/notifications", notificationRoutes);
 
-// Static Uploads
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 // Production Frontend Serve (optional if deploying full MERN)
 if (NODE_ENV === "production") {

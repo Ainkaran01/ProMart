@@ -4,13 +4,13 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import mockApi from '@/services/mockApi';
 import { Listing } from '@/types';
 import { Search, Star, Eye, ArrowRight } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import Footer from '@/components/Footer';
 import Lottie from 'lottie-react';
+import { getApprovedListings } from '@/services/listingService';
 
 const PublicListings = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const PublicListings = () => {
 
   const loadListings = async () => {
     try {
-      const data = await mockApi.getListings({ status: 'approved' });
+      const data = await getApprovedListings();
       setListings(data);
     } catch (error) {
       console.error('Failed to load listings:', error);
@@ -42,8 +42,7 @@ const PublicListings = () => {
       listing.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const paidAds = filteredListings.filter(l => l.isPaidAd);
-  const regularListings = filteredListings.filter(l => !l.isPaidAd);
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -111,62 +110,7 @@ const PublicListings = () => {
       {/* Listings Content */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          {paidAds.length > 0 && (
-            <div className="mb-16">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="mb-8 flex items-center gap-3"
-              >
-                <Star className="h-6 w-6 text-amber-500" />
-                <h2 
-                  className="text-2xl md:text-3xl font-bold text-slate-800"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                  Featured Listings
-                </h2>
-              </motion.div>
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {paidAds.map((listing, index) => (
-                  <motion.div
-                    key={listing.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Card className="group relative h-full overflow-hidden rounded-2xl border-2 border-amber-500 bg-white/80 backdrop-blur-sm p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                      <Badge className="absolute right-4 top-4 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 border-0">
-                        Featured
-                      </Badge>
-                      <h3 className="mb-3 pr-20 text-xl font-semibold text-slate-800 group-hover:text-amber-600 transition-colors">
-                        {listing.title}
-                      </h3>
-                      <p className="mb-3 text-sm font-medium text-slate-600">
-                        {listing.companyName}
-                      </p>
-                      <p className="mb-6 line-clamp-3 text-sm text-slate-600">{listing.description}</p>
-                      <div className="flex items-center justify-between">
-                        <Badge variant="secondary" className="bg-slate-100 text-slate-700">
-                          {listing.category}
-                        </Badge>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => navigate(`/listings/${listing.id}`)}
-                          className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 group"
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </Button>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          )}
+        
 
           <div>
             <motion.div
@@ -186,7 +130,7 @@ const PublicListings = () => {
               </p>
             </motion.div>
 
-            {regularListings.length === 0 ? (
+            {listings.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -209,9 +153,9 @@ const PublicListings = () => {
               </motion.div>
             ) : (
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {regularListings.map((listing, index) => (
+                {filteredListings.map((listing, index) => (
                   <motion.div
-                    key={listing.id}
+                    key={listing._id}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -232,7 +176,7 @@ const PublicListings = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => navigate(`/listings/${listing.id}`)}
+                          onClick={() => navigate(`/listings/${listing._id}`)}
                           className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 group"
                         >
                           <Eye className="mr-2 h-4 w-4" />

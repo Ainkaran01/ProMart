@@ -3,23 +3,30 @@ export type UserRole = 'company' | 'admin';
 export type ListingStatus = 'pending' | 'approved' | 'rejected';
 
 export interface User {
-  id: string;
+  _id: string;
   email: string;
   phone: string;
   role: UserRole;
   companyName?: string;
 }
 
+export interface Attachment {
+  name: string;
+  url: string;
+}
+
 export interface Listing {
-  id: string;
+  _id: string;
   companyId: string;
   companyName: string;
   title: string;
   keyFeatures: string[];
   description: string;
   category: string;
+  location: string;
+  website: string;
   status: ListingStatus;
-  attachments: string[];
+  attachments: Attachment[];
   verificationDocuments?: VerificationDocument[];
   createdAt: string;
   adminComment?: string;

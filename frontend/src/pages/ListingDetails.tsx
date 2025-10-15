@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import mockApi from '@/services/mockApi';
-import { Listing } from '@/types';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import mockApi from "@/services/mockApi";
+import { Listing } from "@/types";
 import {
   Building2,
   Mail,
@@ -25,12 +25,13 @@ import {
   Download,
   Shield,
   ArrowRight,
-} from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import StatusBadge from '@/components/StatusBadge';
-import { formatDistanceToNow } from 'date-fns';
-import Footer from '@/components/Footer';
-import { useAuth } from '@/contexts/AuthContext';
+} from "lucide-react";
+import Navbar from "@/components/Navbar";
+import StatusBadge from "@/components/StatusBadge";
+import { formatDistanceToNow } from "date-fns";
+import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
+import { getApprovedListings } from "@/services/listingService";
 
 const ListingDetails = () => {
   const { id } = useParams();
@@ -39,7 +40,7 @@ const ListingDetails = () => {
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     loadListing();
@@ -47,11 +48,11 @@ const ListingDetails = () => {
 
   const loadListing = async () => {
     try {
-      const listings = await mockApi.getListings();
-      const found = listings.find((l) => l.id === id);
+      const listings = await getApprovedListings();
+      const found = listings.find((l) => l._id === id);
       setListing(found || null);
     } catch (error) {
-      console.error('Failed to load listing:', error);
+      console.error("Failed to load listing:", error);
     } finally {
       setLoading(false);
     }
@@ -77,9 +78,11 @@ const ListingDetails = () => {
         <Navbar />
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="text-center">
-            <h2 className="mb-4 text-2xl font-bold text-slate-800">Listing Not Found</h2>
-            <Button 
-              onClick={() => navigate('/listings')}
+            <h2 className="mb-4 text-2xl font-bold text-slate-800">
+              Listing Not Found
+            </h2>
+            <Button
+              onClick={() => navigate("/listings")}
               className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold"
             >
               Browse Listings
@@ -115,19 +118,16 @@ const ListingDetails = () => {
               <div className="flex-1">
                 <div className="mb-4 flex flex-wrap items-center gap-3">
                   <StatusBadge status={listing.status} />
-                  {listing.isPaidAd && (
-                    <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 border-0">
-                      <Star className="mr-1 h-3 w-3" />
-                      Featured
-                    </Badge>
-                  )}
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0">
+                  <Badge
+                    variant="secondary"
+                    className="bg-white/20 text-white border-0"
+                  >
                     <Tag className="mr-1 h-3 w-3" />
                     {listing.category}
                   </Badge>
                 </div>
 
-                <h1 
+                <h1
                   className="mb-4 text-4xl font-bold tracking-tight lg:text-5xl"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
@@ -137,21 +137,24 @@ const ListingDetails = () => {
                 <div className="flex items-center gap-2 text-slate-300">
                   <Calendar className="h-4 w-4" />
                   <span className="text-sm">
-                    Posted {formatDistanceToNow(new Date(listing.createdAt), { addSuffix: true })}
+                    Posted{" "}
+                    {formatDistanceToNow(new Date(listing.createdAt), {
+                      addSuffix: true,
+                    })}
                   </span>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
                 >
                   Contact Company
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="lg"
                   className="border-amber-500 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 backdrop-blur-sm bg-white/5"
                 >
@@ -161,7 +164,7 @@ const ListingDetails = () => {
             </div>
           </motion.div>
         </div>
-        
+
         {/* Wave divider */}
         <div className="absolute -bottom-1 left-0 right-0">
           <svg
@@ -194,7 +197,9 @@ const ListingDetails = () => {
                   <div className="rounded-lg bg-amber-500/10 p-2">
                     <FileText className="h-5 w-5 text-amber-500" />
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-800">Description</h2>
+                  <h2 className="text-2xl font-bold text-slate-800">
+                    Description
+                  </h2>
                 </div>
                 <div className="prose prose-slate max-w-none">
                   <p className="text-base leading-relaxed text-slate-600">
@@ -209,16 +214,18 @@ const ListingDetails = () => {
                   <div className="rounded-lg bg-amber-500/10 p-2">
                     <Award className="h-5 w-5 text-amber-500" />
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-800">Key Features</h2>
+                  <h2 className="text-2xl font-bold text-slate-800">
+                    Key Features
+                  </h2>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
                   {[
-                    'Professional Service',
-                    'Quick Response Time',
-                    'Verified Company',
-                    'Quality Guarantee',
-                    'Competitive Pricing',
-                    'Excellent Support',
+                    "Professional Service",
+                    "Quick Response Time",
+                    "Verified Company",
+                    "Quality Guarantee",
+                    "Competitive Pricing",
+                    "Excellent Support",
                   ].map((feature, index) => (
                     <motion.div
                       key={feature}
@@ -230,7 +237,9 @@ const ListingDetails = () => {
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
                         <CheckCircle2 className="h-4 w-4 text-amber-500" />
                       </div>
-                      <span className="font-medium text-slate-700">{feature}</span>
+                      <span className="font-medium text-slate-700">
+                        {feature}
+                      </span>
                     </motion.div>
                   ))}
                 </div>
@@ -243,79 +252,119 @@ const ListingDetails = () => {
                     <div className="rounded-lg bg-amber-500/10 p-2">
                       <FileText className="h-5 w-5 text-amber-600" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-800">Admin Feedback</h3>
+                    <h3 className="text-xl font-bold text-slate-800">
+                      Admin Feedback
+                    </h3>
                   </div>
-                  <p className="text-sm leading-relaxed text-slate-600">{listing.adminComment}</p>
+                  <p className="text-sm leading-relaxed text-slate-600">
+                    {listing.adminComment}
+                  </p>
                 </Card>
               )}
 
-              {/* Attachments */}
+              {/* Attachments (Company Images Only) */}
               {listing.attachments && listing.attachments.length > 0 && (
                 <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-8 shadow-lg">
                   <div className="mb-6 flex items-center gap-3">
                     <div className="rounded-lg bg-amber-500/10 p-2">
                       <FileText className="h-5 w-5 text-amber-500" />
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-800">Documents</h2>
+                    <h2 className="text-2xl font-bold text-slate-800">
+                      Company Images
+                    </h2>
                   </div>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {listing.attachments.map((attachment, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 transition-all duration-300 hover:border-amber-500 hover:shadow-md"
-                      >
-                        <FileText className="h-5 w-5 text-amber-500" />
-                        <span className="text-sm font-medium text-slate-700">{attachment}</span>
-                      </div>
-                    ))}
+
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {listing.attachments
+                      .filter(
+                        (file) =>
+                          file.url?.toLowerCase().endsWith(".jpg") ||
+                          file.url?.toLowerCase().endsWith(".jpeg") ||
+                          file.url?.toLowerCase().endsWith(".png")
+                      )
+                      .map((image, index) => (
+                        <motion.div
+                          key={index}
+                          className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md"
+                        >
+                          <img
+                            src={
+                              image?.url?.startsWith("http")
+                                ? image.url
+                                : `http://localhost:5000${image.url}`
+                            }
+                            alt={image.name || `Company Image ${index + 1}`}
+                            className="h-48 w-full object-cover"
+                          />
+                        </motion.div>
+                      ))}
                   </div>
                 </Card>
               )}
 
               {/* Verification Documents (Admin Only) */}
-              {isAdmin && listing.verificationDocuments && listing.verificationDocuments.length > 0 && (
-                <Card className="rounded-2xl border-2 border-amber-500/20 bg-white/80 backdrop-blur-sm p-8 shadow-lg">
-                  <div className="mb-6 flex items-center gap-3">
-                    <div className="rounded-lg bg-amber-500/10 p-2">
-                      <Shield className="h-5 w-5 text-amber-500" />
+              {isAdmin &&
+                listing.verificationDocuments &&
+                listing.verificationDocuments.length > 0 && (
+                  <Card className="rounded-2xl border-2 border-amber-500/20 bg-white/80 backdrop-blur-sm p-8 shadow-lg">
+                    <div className="mb-6 flex items-center gap-3">
+                      <div className="rounded-lg bg-amber-500/10 p-2">
+                        <Shield className="h-5 w-5 text-amber-500" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-slate-800">
+                          Verification Documents
+                        </h2>
+                        <p className="text-sm text-slate-600">
+                          Admin-only view
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-slate-800">Verification Documents</h2>
-                      <p className="text-sm text-slate-600">Admin-only view</p>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    {listing.verificationDocuments.map((doc) => (
-                      <Card key={doc.id} className="rounded-xl border border-slate-200 p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
-                              <FileText className="h-5 w-5 text-amber-500" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-slate-800">{doc.name}</p>
-                              <p className="text-xs text-slate-600">
-                                {(doc.size / 1024).toFixed(2)} KB • Uploaded {new Date(doc.uploadedAt).toLocaleDateString()}
-                              </p>
-                            </div>
-                          </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            asChild
-                            className="border-amber-500 text-amber-600 hover:bg-amber-50"
+
+                    <div className="space-y-3">
+                      {listing.verificationDocuments
+                        .filter((doc) =>
+                          doc.url?.toLowerCase().endsWith(".pdf")
+                        )
+                        .map((doc) => (
+                          <Card
+                            key={doc.id}
+                            className="rounded-xl border border-slate-200 p-4"
                           >
-                            <a href={doc.url} download={doc.name}>
-                              <Download className="mr-2 h-4 w-4" />
-                              Download
-                            </a>
-                          </Button>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </Card>
-              )}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10">
+                                  <FileText className="h-5 w-5 text-amber-500" />
+                                </div>
+                                <div>
+                                  <p className="font-medium text-slate-800">
+                                    {doc.name}
+                                  </p>
+                                  <p className="text-xs text-slate-600">
+                                    {(doc.size / 1024).toFixed(2)} KB • Uploaded{" "}
+                                    {new Date(
+                                      doc.uploadedAt
+                                    ).toLocaleDateString()}
+                                  </p>
+                                </div>
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                className="border-amber-500 text-amber-600 hover:bg-amber-50"
+                              >
+                                <a href={doc.url} download={doc.name}>
+                                  <Download className="mr-2 h-4 w-4" />
+                                  Download
+                                </a>
+                              </Button>
+                            </div>
+                          </Card>
+                        ))}
+                    </div>
+                  </Card>
+                )}
             </motion.div>
           </div>
 
@@ -335,34 +384,44 @@ const ListingDetails = () => {
                     </div>
                     <div>
                       <p className="text-sm text-slate-300">Posted by</p>
-                      <h3 className="text-xl font-bold">{listing.companyName}</h3>
+                      <h3 className="text-xl font-bold">
+                        {listing.companyName}
+                      </h3>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-6 p-6">
                   <div>
-                    <h4 className="mb-4 font-semibold text-slate-800">Company Information</h4>
+                    <h4 className="mb-4 font-semibold text-slate-800">
+                      Company Information
+                    </h4>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3 text-sm">
                         <Mail className="mt-0.5 h-4 w-4 text-slate-500" />
                         <div>
                           <p className="text-xs text-slate-500">Email</p>
-                          <p className="font-medium text-slate-700">contact@company.com</p>
+                          <p className="font-medium text-slate-700">
+                            {user?.email || "N/A"}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 text-sm">
                         <Phone className="mt-0.5 h-4 w-4 text-slate-500" />
                         <div>
                           <p className="text-xs text-slate-500">Phone</p>
-                          <p className="font-medium text-slate-700">+1 (555) 123-4567</p>
+                          <p className="font-medium text-slate-700">
+                            {user?.phone || "N/A"}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 text-sm">
                         <MapPin className="mt-0.5 h-4 w-4 text-slate-500" />
                         <div>
                           <p className="text-xs text-slate-500">Location</p>
-                          <p className="font-medium text-slate-700">San Francisco, CA</p>
+                          <p className="font-medium text-slate-700">
+                            {listing.location}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3 text-sm">
@@ -373,7 +432,7 @@ const ListingDetails = () => {
                             to="#"
                             className="font-medium text-amber-600 hover:text-amber-700 hover:underline"
                           >
-                            www.company.com
+                            {listing.website}
                           </Link>
                         </div>
                       </div>
@@ -383,14 +442,18 @@ const ListingDetails = () => {
                   <Separator className="bg-slate-200" />
 
                   <div>
-                    <h4 className="mb-4 font-semibold text-slate-800">Company Stats</h4>
+                    <h4 className="mb-4 font-semibold text-slate-800">
+                      Company Stats
+                    </h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="rounded-xl bg-amber-500/5 p-4 text-center">
                         <div className="mb-1 flex items-center justify-center">
                           <TrendingUp className="h-5 w-5 text-amber-500" />
                         </div>
                         <p className="text-2xl font-bold text-amber-500">3</p>
-                        <p className="text-xs text-slate-600">Active Listings</p>
+                        <p className="text-xs text-slate-600">
+                          Active Listings
+                        </p>
                       </div>
                       <div className="rounded-xl bg-amber-500/5 p-4 text-center">
                         <div className="mb-1 flex items-center justify-center">
@@ -402,7 +465,7 @@ const ListingDetails = () => {
                     </div>
                   </div>
 
-                  <Button 
+                  <Button
                     className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
                     size="lg"
                   >
@@ -414,25 +477,33 @@ const ListingDetails = () => {
 
               {/* Trust Badges */}
               <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-6 shadow-lg">
-                <h4 className="mb-4 font-semibold text-slate-800">Verified & Trusted</h4>
+                <h4 className="mb-4 font-semibold text-slate-800">
+                  Verified & Trusted
+                </h4>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-sm">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
                       <CheckCircle2 className="h-4 w-4 text-amber-500" />
                     </div>
-                    <span className="font-medium text-slate-700">Admin Verified</span>
+                    <span className="font-medium text-slate-700">
+                      Admin Verified
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
                       <Award className="h-4 w-4 text-amber-500" />
                     </div>
-                    <span className="font-medium text-slate-700">Premium Member</span>
+                    <span className="font-medium text-slate-700">
+                      Premium Member
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
                       <Star className="h-4 w-4 text-amber-500" />
                     </div>
-                    <span className="font-medium text-slate-700">5 Star Rating</span>
+                    <span className="font-medium text-slate-700">
+                      5 Star Rating
+                    </span>
                   </div>
                 </div>
               </Card>
@@ -442,7 +513,7 @@ const ListingDetails = () => {
       </div>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-slate-900 to-slate-800 text-white mb-5" >
+      <section className="py-24 bg-gradient-to-r from-slate-900 to-slate-800 text-white mb-5">
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -461,7 +532,7 @@ const ListingDetails = () => {
             <Button
               size="lg"
               className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold px-8 py-6 text-lg shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
-              onClick={() => navigate('/register')}
+              onClick={() => navigate("/register")}
             >
               Get Started Today
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
