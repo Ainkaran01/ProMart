@@ -70,13 +70,7 @@ const Footer = () => {
                   className="h-14 lg:h-16 brightness-0 invert"
                 />
               </Link>
-              {/* Text logo */}
-              <div className="mb-4">
-                <h2 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                  ProMart
-                </h2>
-                <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-cyan-500 mt-1 rounded-full mx-auto lg:mx-0"></div>
-              </div>
+              
             </div>
             
             <p className="mb-4 lg:mb-6 text-sm lg:text-lg font-light text-slate-300 leading-relaxed text-center lg:text-left">
@@ -161,25 +155,7 @@ const Footer = () => {
             </div>
           ))}
 
-          {/* Newsletter Section - Full width on mobile */}
-          <div className="lg:col-span-1 lg:mt-0">
-            <h3 className="mb-3 lg:mb-4 text-sm font-semibold uppercase tracking-wider text-white text-center lg:text-left">
-              Newsletter
-            </h3>
-            <p className="mb-3 lg:mb-4 text-xs lg:text-sm text-slate-300 text-center lg:text-left">
-              Subscribe for updates and offers.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Input 
-                type="email" 
-                placeholder="Enter your email"
-                className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 text-sm"
-              />
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap text-sm">
-                Subscribe
-              </Button>
-            </div>
-          </div>
+         
         </div>
 
         <Separator className="my-6 lg:my-8 bg-slate-700" />
