@@ -15,10 +15,10 @@ export interface Listing {
   companyId: string;
   companyName: string;
   title: string;
+  keyFeatures: string[];
   description: string;
   category: string;
   status: ListingStatus;
-  isPaidAd: boolean;
   attachments: string[];
   verificationDocuments?: VerificationDocument[];
   createdAt: string;
