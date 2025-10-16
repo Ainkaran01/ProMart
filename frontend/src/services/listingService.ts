@@ -46,14 +46,14 @@ export const getApprovedListings = async () => {
   return res.data;
 };
 
-// Admin gets all listings
-export const getAllListings = async () => {
-  const res = await API.get("/listings");
-  return res.data;
-};
+// // Admin gets all listings
+// export const getAllListings = async (p0: { status: string; }) => {
+//   const res = await API.get("/listings");
+//   return res.data;
+// };
 
-// Admin updates listing status
-export const updateListingStatus = async (id, status, comment = "") => {
-  const res = await API.put(`/listings/${id}/status`, { status, comment });
-  return res.data;
-};
+// // Admin updates listing status
+// export const updateListingStatus = async (id, status, comment = "") => {
+//   const res = await API.put(`/listings/${id}/status`, { status, comment });
+//   return res.data;
+// };

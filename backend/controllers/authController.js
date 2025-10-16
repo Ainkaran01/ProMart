@@ -1,7 +1,6 @@
 import User from "../models/user.js";
 import { generateToken } from "../utils/jwt.js";
 
-
 export const registerUser = async (req, res) => {
   try {
     const { companyName, email, phone, password, role } = req.body; // ✅ added phone
@@ -36,7 +35,6 @@ export const registerUser = async (req, res) => {
   }
 };
 
-
 // ✅ Login User
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -47,12 +45,19 @@ export const loginUser = async (req, res) => {
   const isMatch = await user.matchPassword(password);
   if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
+  // Optional safety fix
+  if (!user.passwordChangedAt) {
+    user.passwordChangedAt = new Date();
+    await user.save();
+  }
+
   res.json({
     _id: user._id,
     companyName: user.companyName,
     email: user.email,
-    phone: user.phone, 
+    phone: user.phone,
     role: user.role,
+    createdAt: user.createdAt,
     token: generateToken({ id: user._id, role: user.role }),
   });
 };

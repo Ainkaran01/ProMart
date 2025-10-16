@@ -3,9 +3,27 @@ import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "@/components/StatusBadge";
+import { useToast } from "@/components/ui/use-toast";
 
 const ListingCard = ({ listing }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleView = () => {
+    if (listing.status !== "approved") {
+      toast({
+        title: "Access Restricted",
+        description:
+          listing.status === "pending"
+            ? "This listing is still under review. You can view it once it's approved."
+            : "This listing was rejected and cannot be viewed.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    navigate(`/listings/${listing._id}`);
+  };
 
   return (
     <Card className="p-6 transition-shadow hover:shadow-md">
@@ -18,7 +36,7 @@ const ListingCard = ({ listing }) => {
           <p className="mb-2 text-sm text-muted-foreground">{listing.description}</p>
           <p className="text-xs text-muted-foreground">Category: {listing.category}</p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => navigate(`/listings/${listing._id}`)}>
+        <Button variant="outline" size="sm" onClick={handleView}>
           <Eye className="mr-2 h-4 w-4" /> View Details
         </Button>
       </div>

@@ -8,6 +8,8 @@ export interface User {
   phone: string;
   role: UserRole;
   companyName?: string;
+  token:string;
+  createdAt: string;
 }
 
 export interface Attachment {
@@ -17,7 +19,12 @@ export interface Attachment {
 
 export interface Listing {
   _id: string;
-  companyId: string;
+  companyId: {
+    _id: string;
+    companyName: string;
+    email: string;
+    phone: string;
+  };
   companyName: string;
   title: string;
   keyFeatures: string[];

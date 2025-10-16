@@ -153,13 +153,13 @@ const ListingDetails = () => {
                   Contact Company
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <Button
+                {/* <Button
                   variant="outline"
                   size="lg"
                   className="border-amber-500 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 backdrop-blur-sm bg-white/5"
                 >
                   Save Listing
-                </Button>
+                </Button> */}
               </div>
             </div>
           </motion.div>
@@ -218,31 +218,79 @@ const ListingDetails = () => {
                     Key Features
                   </h2>
                 </div>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {[
-                    "Professional Service",
-                    "Quick Response Time",
-                    "Verified Company",
-                    "Quality Guarantee",
-                    "Competitive Pricing",
-                    "Excellent Support",
-                  ].map((feature, index) => (
-                    <motion.div
-                      key={feature}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.2 + index * 0.05 }}
-                      className="flex items-center gap-3"
-                    >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
-                        <CheckCircle2 className="h-4 w-4 text-amber-500" />
-                      </div>
-                      <span className="font-medium text-slate-700">
-                        {feature}
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
+
+                {(() => {
+                  let features: string[] = [];
+
+                  // Handle the specific format where keyFeatures is an array with one JSON string
+                  if (
+                    listing?.keyFeatures &&
+                    Array.isArray(listing.keyFeatures) &&
+                    listing.keyFeatures.length > 0
+                  ) {
+                    const firstItem = listing.keyFeatures[0];
+
+                    if (
+                      typeof firstItem === "string" &&
+                      firstItem.startsWith("[")
+                    ) {
+                      try {
+                        // Parse the JSON string array
+                        features = JSON.parse(firstItem);
+                      } catch (e) {
+                        console.error("Failed to parse keyFeatures:", e);
+                        // Fallback: try to extract features from the string
+                        features = firstItem
+                          .replace(/[\[\]"]/g, "")
+                          .split(",")
+                          .map((item) => item.trim());
+                      }
+                    } else if (Array.isArray(firstItem)) {
+                      // If it's already a nested array
+                      features = firstItem;
+                    } else if (typeof firstItem === "string") {
+                      // If it's a simple string, use it as a single feature
+                      features = [firstItem];
+                    }
+                  } else if (Array.isArray(listing?.keyFeatures)) {
+                    // If it's already a proper array
+                    features = listing.keyFeatures;
+                  }
+
+                  // Filter out any empty strings and ensure all items are strings
+                  features = features.filter(
+                    (feature) => feature && typeof feature === "string"
+                  );
+
+                  if (features.length === 0) {
+                    return (
+                      <p className="text-sm text-muted-foreground">
+                        No features listed yet.
+                      </p>
+                    );
+                  }
+
+                  return (
+                    <div className="grid gap-4 md:grid-cols-2">
+                      {features.map((feature, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 + index * 0.03 }}
+                          className="flex items-center gap-3"
+                        >
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10">
+                            <CheckCircle2 className="h-4 w-4 text-amber-500" />
+                          </div>
+                          <span className="font-medium text-slate-700">
+                            {feature}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  );
+                })()}
               </Card>
 
               {/* Admin Feedback */}
@@ -402,7 +450,7 @@ const ListingDetails = () => {
                         <div>
                           <p className="text-xs text-slate-500">Email</p>
                           <p className="font-medium text-slate-700">
-                            {user?.email || "N/A"}
+                            {listing.companyId.email || "N/A"}
                           </p>
                         </div>
                       </div>
@@ -411,7 +459,7 @@ const ListingDetails = () => {
                         <div>
                           <p className="text-xs text-slate-500">Phone</p>
                           <p className="font-medium text-slate-700">
-                            {user?.phone || "N/A"}
+                            {listing.companyId.phone || "N/A"}
                           </p>
                         </div>
                       </div>
