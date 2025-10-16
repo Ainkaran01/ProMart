@@ -11,6 +11,7 @@ import DashboardHome from "@/components/CompanyDashboard/dashboardHome";
 import Settings from "./Settings";
 import type { Notification } from "@/types";
 import mockApi from "@/services/mockApi";
+import { getMyListings } from "@/services/listingService";
 
 const CompanyDashboard = () => {
   const [activeSection, setActiveSection] = useState<"dashboard" | "settings">("dashboard");

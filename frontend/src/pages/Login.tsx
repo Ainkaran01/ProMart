@@ -194,20 +194,7 @@ const Login = () => {
                 </p>
               </div>
 
-              {/* Demo Credentials */}
-              <div className="mt-8 rounded-xl bg-slate-50/80 border border-slate-200 p-4">
-                <p className="mb-3 text-sm font-semibold text-slate-800">Demo Credentials:</p>
-                <div className="space-y-2 text-xs text-slate-600">
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-amber-500"></div>
-                    <span><strong>Admin:</strong> admin@promart.com (any password)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-amber-500"></div>
-                    <span><strong>Company:</strong> company@example.com (any password)</span>
-                  </div>
-                </div>
-              </div>
+             
             </Card>
           </motion.div>
         </div>

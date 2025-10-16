@@ -8,43 +8,30 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { useToast } from '@/hooks/use-toast';
 import { User } from '@/types';
 import { Search, UserCog, Mail, Phone, Building2, Shield, UserX } from 'lucide-react';
+import adminApi from '@/services/adminService';
 
 
 const UserManagement = () => {
   const { toast } = useToast();
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: 'admin-1',
-      email: 'admin@promart.com',
-      phone: '+1234567890',
-      role: 'admin',
-    },
-    {
-      id: 'company-1',
-      email: 'company@example.com',
-      phone: '+1987654321',
-      role: 'company',
-      companyName: 'Tech Solutions Inc',
-    },
-    {
-      id: 'company-2',
-      email: 'sales@digitalhub.com',
-      phone: '+1555123456',
-      role: 'company',
-      companyName: 'Digital Hub Agency',
-    },
-    {
-      id: 'company-3',
-      email: 'info@cloudservices.com',
-      phone: '+1777999888',
-      role: 'company',
-      companyName: 'Cloud Services Pro',
-    },
-  ]);
-  
+  const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+
+
+   useEffect(() => {
+    const fetchuser = async () => {
+      try {
+        const data = await adminApi.getCompanies();
+        setUsers(data);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchuser();
+  }, []);
 
   const filteredUsers = users.filter(
     (user) =>
@@ -151,7 +138,7 @@ const UserManagement = () => {
           ) : (
             filteredUsers.map((user, index) => (
               <motion.div
-                key={user.id}
+                key={user._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
@@ -212,7 +199,7 @@ const UserManagement = () => {
                     <p className="mb-1 text-sm font-medium text-muted-foreground">
                       User ID
                     </p>
-                    <p className="font-mono text-sm">{selectedUser.id}</p>
+                    <p className="font-mono text-sm">{selectedUser._id}</p>
                   </div>
                   <div>
                     <p className="mb-1 text-sm font-medium text-muted-foreground">
@@ -272,7 +259,7 @@ const UserManagement = () => {
                 <div className="flex flex-wrap gap-3">
                   <Button
                     variant="outline"
-                    onClick={() => handleResetPassword(selectedUser.id)}
+                    onClick={() => handleResetPassword(selectedUser._id)}
                     disabled={loading}
                   >
                     Send Password Reset
@@ -281,7 +268,7 @@ const UserManagement = () => {
                   <Button
                     variant="outline"
                     className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                    onClick={() => handleDeactivateUser(selectedUser.id)}
+                    onClick={() => handleDeactivateUser(selectedUser._id)}
                     disabled={loading}
                   >
                     <UserX className="mr-2 h-4 w-4" />

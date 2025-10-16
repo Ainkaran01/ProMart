@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import mockApi from "@/services/mockApi";
 import CreateListingModal from "./CreateListingModal";
 import ListingCard from "./ListingCard";
+import { getMyListings } from "@/services/listingService";
 
 const DashboardHome = () => {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ const DashboardHome = () => {
     if (!user) return;
     try {
       setLoading(true);
-      const listingsData = await mockApi.getListings({ companyId: user.id });
+      const listingsData = await getMyListings();
       setListings(listingsData);
     } catch (error) {
       console.error("Failed to load listings:", error);
@@ -46,7 +47,7 @@ const DashboardHome = () => {
       icon: FileText,
       color: "primary",
       bgColor: "bg-primary/10",
-      textColor: "text-primary"
+      textColor: "text-primary",
     },
     {
       label: "Active Listings",
@@ -54,7 +55,7 @@ const DashboardHome = () => {
       icon: Megaphone,
       color: "success",
       bgColor: "bg-success/10",
-      textColor: "text-success"
+      textColor: "text-success",
     },
     {
       label: "Pending Review",
@@ -62,7 +63,7 @@ const DashboardHome = () => {
       icon: Clock,
       color: "warning",
       bgColor: "bg-warning/10",
-      textColor: "text-warning"
+      textColor: "text-warning",
     },
     {
       label: "Rejected",
@@ -70,8 +71,8 @@ const DashboardHome = () => {
       icon: AlertCircle,
       color: "destructive",
       bgColor: "bg-destructive/10",
-      textColor: "text-destructive"
-    }
+      textColor: "text-destructive",
+    },
   ];
 
   if (loading) {
@@ -97,8 +98,8 @@ const DashboardHome = () => {
             Manage your listings and ads
           </p>
         </div>
-        <Button 
-          size="lg" 
+        <Button
+          size="lg"
           onClick={() => setShowCreateModal(true)}
           className="w-full sm:w-auto"
         >
@@ -120,8 +121,12 @@ const DashboardHome = () => {
             >
               <Card className="p-4 sm:p-6 hover:shadow-md transition-shadow duration-200 h-full">
                 <div className="flex items-center gap-3 sm:gap-4">
-                  <div className={`rounded-full ${stat.bgColor} p-2 sm:p-3 flex-shrink-0`}>
-                    <IconComponent className={`h-4 w-4 sm:h-6 sm:w-6 ${stat.textColor}`} />
+                  <div
+                    className={`rounded-full ${stat.bgColor} p-2 sm:p-3 flex-shrink-0`}
+                  >
+                    <IconComponent
+                      className={`h-4 w-4 sm:h-6 sm:w-6 ${stat.textColor}`}
+                    />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-lg sm:text-2xl font-bold truncate">
@@ -141,12 +146,10 @@ const DashboardHome = () => {
       {/* Listings Section */}
       <section className="space-y-4 sm:space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl sm:text-2xl font-semibold">
-            Your Listings
-          </h2>
+          <h2 className="text-xl sm:text-2xl font-semibold">Your Listings</h2>
           {listings.length > 0 && (
             <div className="text-sm text-muted-foreground hidden sm:block">
-              {listings.length} listing{listings.length !== 1 ? 's' : ''}
+              {listings.length} listing{listings.length !== 1 ? "s" : ""}
             </div>
           )}
         </div>
@@ -167,10 +170,11 @@ const DashboardHome = () => {
                     No listings yet
                   </h3>
                   <p className="text-sm sm:text-base text-muted-foreground">
-                    Create your first listing to start showcasing your business to potential clients
+                    Create your first listing to start showcasing your business
+                    to potential clients
                   </p>
                 </div>
-                <Button 
+                <Button
                   onClick={() => setShowCreateModal(true)}
                   size="lg"
                   className="mt-4"
