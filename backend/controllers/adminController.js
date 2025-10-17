@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Listing from "../models/Listing.js";
+import sendEmail from "../services/emailService.js";
 
 // 🟩 Dashboard stats
 export const getDashboardStats = async (req, res) => {
