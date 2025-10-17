@@ -1,64 +1,87 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Plus, Edit, Trash2 } from "lucide-react";
+import {
+  createBlog,
+  deleteBlog,
+  getBlogs,
+  updateBlog,
+} from "@/services/blogService";
 
 interface BlogPost {
-  id: string;
+  _id: string;
   title: string;
   excerpt: string;
   content: string;
   author: string;
   date: string;
+  readTime: string;
+  category?: string;
   image: string;
 }
 
 const BlogManagement = () => {
   const { toast } = useToast();
-  const [posts, setPosts] = useState<BlogPost[]>([
-    {
-      id: '1',
-      title: 'Getting Started with B2B Marketing',
-      excerpt: 'Essential strategies for successful B2B marketing campaigns',
-      content: 'Full content here...',
-      author: 'Admin',
-      date: '2024-01-15',
-      image: '/placeholder.svg',
-    },
-  ]);
-
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<Partial<BlogPost>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const data = await getBlogs();
+        setPosts(data);
+      } catch {
+        toast({ title: "Failed to load blogs", variant: "destructive" });
+      }
+    };
+    fetchBlogs();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (currentPost.id) {
-      setPosts(posts.map(p => p.id === currentPost.id ? currentPost as BlogPost : p));
-      toast({ title: 'Blog post updated successfully' });
-    } else {
-      const newPost: BlogPost = {
-        ...currentPost,
-        id: Date.now().toString(),
-        date: new Date().toISOString().split('T')[0],
-        author: 'Admin',
-      } as BlogPost;
-      setPosts([newPost, ...posts]);
-      toast({ title: 'Blog post created successfully' });
+    try {
+      if (currentPost._id) {
+        const updated = await updateBlog(currentPost._id, currentPost);
+        setPosts(posts.map((p) => (p._id === updated._id ? updated : p)));
+        toast({ title: "Blog updated successfully" });
+      } else {
+        const newBlog = await createBlog(currentPost);
+        setPosts([newBlog, ...posts]);
+        toast({ title: "Blog created successfully" });
+      }
+      setIsEditing(false);
+      setCurrentPost({});
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message,
+        variant: "destructive",
+      });
     }
-    
-    setIsEditing(false);
-    setCurrentPost({});
   };
 
-  const handleDelete = (id: string) => {
-    setPosts(posts.filter(p => p.id !== id));
-    toast({ title: 'Blog post deleted' });
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteBlog(id);
+      setPosts(posts.filter((p) => p._id !== id));
+      toast({ title: "Blog deleted successfully" });
+    } catch {
+      toast({ title: "Error deleting blog", variant: "destructive" });
+    }
   };
 
   return (
@@ -83,8 +106,10 @@ const BlogManagement = () => {
               <Label htmlFor="title">Title *</Label>
               <Input
                 id="title"
-                value={currentPost.title || ''}
-                onChange={(e) => setCurrentPost({ ...currentPost, title: e.target.value })}
+                value={currentPost.title || ""}
+                onChange={(e) =>
+                  setCurrentPost({ ...currentPost, title: e.target.value })
+                }
                 required
               />
             </div>
@@ -92,20 +117,74 @@ const BlogManagement = () => {
               <Label htmlFor="excerpt">Excerpt *</Label>
               <Textarea
                 id="excerpt"
-                value={currentPost.excerpt || ''}
-                onChange={(e) => setCurrentPost({ ...currentPost, excerpt: e.target.value })}
+                value={currentPost.excerpt || ""}
+                onChange={(e) =>
+                  setCurrentPost({ ...currentPost, excerpt: e.target.value })
+                }
                 required
                 rows={3}
               />
             </div>
             <div>
+              <Label htmlFor="category">Category *</Label>
+              <Select
+                value={currentPost.category || ""}
+                onValueChange={(value) =>
+                  setCurrentPost({ ...currentPost, category: value })
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[
+                    "Tips & Tricks",
+                    "Industry Insights",
+                    "Guides",
+                    "Success Stories",
+                    "Business Finance",
+                    "Relationships",
+                  ].map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
               <Label htmlFor="content">Content *</Label>
               <Textarea
                 id="content"
-                value={currentPost.content || ''}
-                onChange={(e) => setCurrentPost({ ...currentPost, content: e.target.value })}
+                value={currentPost.content || ""}
+                onChange={(e) =>
+                  setCurrentPost({ ...currentPost, content: e.target.value })
+                }
                 required
                 rows={10}
+              />
+            </div>
+            <div>
+              <Label htmlFor="author">Author *</Label>
+              <Input
+                id="author"
+                value={currentPost.author || ""}
+                onChange={(e) =>
+                  setCurrentPost({ ...currentPost, author: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="readTime">Read Time *</Label>
+              <Input
+                id="readTime"
+                value={currentPost.readTime || ""}
+                onChange={(e) =>
+                  setCurrentPost({ ...currentPost, readTime: e.target.value })
+                }
+                required
               />
             </div>
             <div>
@@ -113,14 +192,16 @@ const BlogManagement = () => {
               <Input
                 id="image"
                 type="url"
-                value={currentPost.image || ''}
-                onChange={(e) => setCurrentPost({ ...currentPost, image: e.target.value })}
+                value={currentPost.image || ""}
+                onChange={(e) =>
+                  setCurrentPost({ ...currentPost, image: e.target.value })
+                }
                 placeholder="https://example.com/image.jpg"
               />
             </div>
             <div className="flex gap-3">
               <Button type="submit" className="flex-1">
-                {currentPost.id ? 'Update' : 'Create'} Post
+                {currentPost._id ? "Update" : "Create"} Post
               </Button>
               <Button
                 type="button"
@@ -140,7 +221,7 @@ const BlogManagement = () => {
         <div className="grid gap-4">
           {posts.map((post, index) => (
             <motion.div
-              key={post.id}
+              key={post._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
@@ -149,9 +230,12 @@ const BlogManagement = () => {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <h3 className="mb-2 text-lg font-semibold">{post.title}</h3>
-                    <p className="mb-2 text-sm text-muted-foreground">{post.excerpt}</p>
+                    <p className="mb-2 text-sm text-muted-foreground">
+                      {post.excerpt}
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      By {post.author} • {new Date(post.date).toLocaleDateString()}
+                      By {post.author} •{" "}
+                      {new Date(post.date).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -170,7 +254,7 @@ const BlogManagement = () => {
                       size="sm"
                       variant="outline"
                       className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                      onClick={() => handleDelete(post.id)}
+                      onClick={() => handleDelete(post._id)}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Delete
