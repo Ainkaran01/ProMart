@@ -49,7 +49,7 @@ export interface VerificationDocument {
 }
 
 export interface Notification {
-  id: string;
+  _id: string;
   type: 'new_listing' | 'status_update';
   message: string;
   listingId: string;

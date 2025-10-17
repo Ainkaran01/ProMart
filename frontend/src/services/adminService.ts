@@ -30,12 +30,11 @@ const adminApi = {
   },
 
   // ✅ Reject listing
-  rejectListing: async (listingId: string, comment?: string) => {
-    const { data } = await API.put(`/admin/listings/${listingId}/reject`, {
-      comment,
-    });
-    return data;
-  },
+ // In your adminApi service
+  rejectListing : async (listingId: string, reason: string) => {
+  const res = await API.put(`/admin/listings/${listingId}/reject`, { reason });
+  return res.data;
+   },
 
   // ✅ Delete listing
   deleteListing: async (listingId: string) => {

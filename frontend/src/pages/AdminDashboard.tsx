@@ -18,7 +18,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import mockApi from "@/services/mockApi";
 import { Listing, Notification } from "@/types";
 import {
   CheckCircle,
@@ -63,11 +62,11 @@ import {
 import UserManagement from "./UserManagement";
 import Settings from "./Settings";
 import adminApi from "@/services/adminService";
+import { getNotifications, markAllAsRead, markAsRead } from "@/services/notificationService";
 
 const AdminDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [pendingListings, setPendingListings] = useState<Listing[]>([]);
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -100,7 +99,7 @@ const AdminDashboard = () => {
       const [pendingRes, allRes, notifs, monthlyRes] = await Promise.all([
         adminApi.getListings({ status: "pending" }),
         adminApi.getListings({ status: "all" }),
-        mockApi.getNotifications("admin-1"),
+        getNotifications(),
         adminApi.getMonthlyStats(),
       ]);
 
@@ -151,35 +150,37 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleReject = async (listingId: string) => {
-    if (!comment.trim()) {
-      toast({
-        title: "Comment required",
-        description: "Please provide a reason for rejection",
-        variant: "destructive",
-      });
-      return;
-    }
+ const handleReject = async (listingId: string) => {
+  if (!comment.trim()) {
+    toast({
+      title: "Comment required",
+      description: "Please provide a reason for rejection",
+      variant: "destructive",
+    });
+    return;
+  }
 
-    setLoading(true);
-    try {
-      await adminApi.rejectListing(listingId, comment);
-      toast({
-        title: "Listing rejected",
-        description: "The company has been notified",
-      });
-      setSelectedListing(null);
-      setComment("");
-      loadData();
-    } catch (error) {
-      toast({
-        title: "Failed to reject",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    await adminApi.rejectListing(listingId, comment);
+    toast({
+      title: "Listing rejected",
+      description: "The company has been notified with your comment",
+    });
+    setSelectedListing(null);
+    setComment("");
+    loadData();
+  } catch (error) {
+    console.error("Rejection error:", error);
+    toast({
+      title: "Failed to reject listing",
+      description: "Please try again",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const unreadCount = notifications.filter((n) => !n.read).length;
   const approvedListings = allListings.filter((l) => l.status === "approved");
@@ -333,12 +334,12 @@ const AdminDashboard = () => {
         <NotificationCenter
           notifications={notifications}
           onClose={() => setShowNotifications(false)}
-          onMarkRead={async (id) => {
-            await mockApi.markNotificationRead(id);
+          onMarkRead={async (_id) => {
+            await markAsRead(_id);
             loadData();
           }}
           onMarkAllRead={async () => {
-            await mockApi.markAllNotificationsRead();
+            await markAllAsRead();
             loadData();
           }}
         />
@@ -641,9 +642,6 @@ const AdminDashboard = () => {
             </p>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Provide feedback to help the company improve their listing
-            </p>
             <div>
               <Label htmlFor="comment">Rejection Reason *</Label>
               <Textarea
