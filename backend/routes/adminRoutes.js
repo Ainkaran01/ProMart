@@ -2,6 +2,13 @@ import express from "express";
 import User from "../models/User.js";
 import Listing from "../models/Listing.js";
 import { protect, adminOnly } from "../middlewares/authMiddleware.js";
+import {
+  getDashboardStats,
+  getAllCompanies,
+  getAllListings,
+  approveListing,
+  rejectListing
+} from "../controllers/adminController.js";
 
 const router = express.Router();
 
@@ -11,41 +18,10 @@ router.use(protect, adminOnly);
 //
 // ✅ 1. Dashboard Summary
 //
-router.get("/stats", async (req, res) => {
-  try {
-    const totalCompanies = await User.countDocuments({ role: "company" });
-    const totalListings = await Listing.countDocuments();
-    const approvedListings = await Listing.countDocuments({
-      status: "approved",
-    });
-    const pendingListings = await Listing.countDocuments({ status: "pending" });
-    const rejectedListings = await Listing.countDocuments({
-      status: "rejected",
-    });
+router.get("/stats", getDashboardStats);
 
-    res.json({
-      totalCompanies,
-      totalListings,
-      approvedListings,
-      pendingListings,
-      rejectedListings,
-    });
-  } catch (error) {
-    console.error("Error fetching stats:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// ✅ 2. Get All Users (Companies + Admins)
-router.get("/companies", async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    res.json(users);
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+// ✅ 2. Get All Companies
+router.get("/companies", getAllCompanies);
 
 //
 // ✅ 3. Get All Listings (with company info)
@@ -75,42 +51,14 @@ router.get("/listings", async (req, res) => {
 });
 
 //
-// ✅ 4. Approve Listing
+// ✅ 4. Approve Listing (using controller function)
 //
-router.put("/listings/:id/approved", async (req, res) => {
-  try {
-    const listing = await Listing.findById(req.params.id);
-    if (!listing) return res.status(404).json({ message: "Listing not found" });
-
-    listing.status = "approved";
-    await listing.save();
-
-    res.json({ message: "Listing approved", listing });
-  } catch (error) {
-    console.error("Error approving listing:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+router.put("/listings/:id/approve", approveListing);
 
 //
-// ✅ 5. Reject Listing
+// ✅ 5. Reject Listing (using controller function)
 //
-router.put("/listings/:id/reject", async (req, res) => {
-  try {
-    const { comment } = req.body;
-    const listing = await Listing.findById(req.params.id);
-    if (!listing) return res.status(404).json({ message: "Listing not found" });
-
-    listing.status = "rejected";
-    listing.adminComment = comment || "";
-    await listing.save();
-
-    res.json({ message: "Listing rejected", listing });
-  } catch (error) {
-    console.error("Error rejecting listing:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+router.put("/listings/:id/reject", rejectListing);
 
 //
 // ✅ 6. Delete Listing
@@ -166,18 +114,8 @@ router.get("/listings/monthly", async (req, res) => {
     ]);
 
     const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
     ];
 
     const chartData = stats.map((s) => ({

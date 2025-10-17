@@ -1,5 +1,7 @@
 import Listing from "../models/Listing.js";
 import User from "../models/User.js";
+import Notification from "../models/Notification.js";
+import sendEmail from "../services/emailService.js";
 
 // 🟩 Create new listing (with file uploads)
 export const createListing = async (req, res) => {
@@ -39,6 +41,30 @@ export const createListing = async (req, res) => {
       verificationDocuments,
       status: "pending",
     });
+
+    // 🔔 NOTIFY ADMIN: Create notification for all admins
+    const admins = await User.find({ role: "admin" });
+    
+    const adminNotificationPromises = admins.map(admin => 
+      Notification.create({
+        userId: admin._id,
+        type: "new_listing",
+        message: `New listing "${listing.title}" submitted by ${user.companyName} for approval`,
+        listingId: listing._id,
+        read: false
+      })
+    );
+
+    // 📧 NOTIFY ADMIN: Send email to all admins
+    const adminEmailPromises = admins.map(admin =>
+      sendEmail(
+        admin.email,
+        "New Listing Submission - Requires Approval",
+        `A new listing "${listing.title}" has been submitted by ${user.companyName} and is pending your approval.\n\nListing Details:\n- Title: ${listing.title}\n- Category: ${listing.category}\n- Company: ${user.companyName}\n\nPlease review it in the admin dashboard.`
+      ).catch(error => console.error("Failed to send email to admin:", error))
+    );
+
+    await Promise.all([...adminNotificationPromises, ...adminEmailPromises]);
 
     res.status(201).json(listing);
   } catch (err) {
@@ -154,8 +180,32 @@ export const updateListing = async (req, res) => {
 
     // 🔁 Set status back to pending (needs re-approval)
     listing.status = "pending";
-
     await listing.save();
+
+    // 🔔 NOTIFY ADMIN: Create notification for re-approval
+    const admins = await User.find({ role: "admin" });
+    const user = await User.findById(req.user._id);
+    
+    const reapprovalNotificationPromises = admins.map(admin =>
+      Notification.create({
+        userId: admin._id,
+        type: "re_approval",
+        message: `Listing "${listing.title}" updated by ${user.companyName} and requires re-approval`,
+        listingId: listing._id,
+        read: false
+      })
+    );
+
+    // 📧 NOTIFY ADMIN: Send email for re-approval
+    const reapprovalEmailPromises = admins.map(admin =>
+      sendEmail(
+        admin.email,
+        "Listing Updated - Requires Re-approval",
+        `The listing "${listing.title}" has been updated by ${user.companyName} and requires your re-approval.\n\nPlease review the changes in the admin dashboard.`
+      ).catch(error => console.error("Failed to send email to admin:", error))
+    );
+
+    await Promise.all([...reapprovalNotificationPromises, ...reapprovalEmailPromises]);
 
     res.json({
       message: "Listing updated and pending admin approval",

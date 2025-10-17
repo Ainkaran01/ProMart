@@ -3,15 +3,13 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import NotificationCenter from "@/components/NotificationCenter";
 import Footer from "@/components/Footer";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, Settings as SettingsIcon, ChevronDown, ChevronUp } from "lucide-react";
-import Sidebar from "@/components/CompanyDashboard/sidebar";
 import DashboardHome from "@/components/CompanyDashboard/dashboardHome";
 import Settings from "./Settings";
 import type { Notification } from "@/types";
-import mockApi from "@/services/mockApi";
-import { getMyListings } from "@/services/listingService";
+import { getNotifications, markAllAsRead, markAsRead } from "@/services/notificationService";
+import Sidebar from "@/components/CompanyDashboard/Sidebar";
 
 const CompanyDashboard = () => {
   const [activeSection, setActiveSection] = useState<"dashboard" | "settings">("dashboard");
@@ -21,7 +19,8 @@ const CompanyDashboard = () => {
 
   const loadData = async () => {
     try {
-      const notificationsData = await mockApi.getNotifications();
+      // ✅ FIX: Actually call the function with parentheses
+      const notificationsData = await getNotifications();
       setNotifications(notificationsData);
     } catch (error) {
       console.error("Failed to load data:", error);
@@ -44,11 +43,11 @@ const CompanyDashboard = () => {
           notifications={notifications}
           onClose={() => setShowNotifications(false)}
           onMarkRead={async (id) => {
-            await mockApi.markNotificationRead(id);
+            await markAsRead(id); // ✅ This should also be called with parentheses if it takes parameters
             loadData();
           }}
           onMarkAllRead={async () => {
-            await mockApi.markAllNotificationsRead();
+            await markAllAsRead(); // ✅ FIX: Call the function
             loadData();
           }}
         />

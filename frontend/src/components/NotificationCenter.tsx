@@ -61,7 +61,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
               <div className="space-y-3">
                 {notifications.map((notification) => (
                   <motion.div
-                    key={notification.id}
+                    key={notification._id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: 100 }}
@@ -70,7 +70,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
                       className={`cursor-pointer p-4 transition-colors hover:bg-accent ${
                         !notification.read ? 'border-l-4 border-l-primary' : ''
                       }`}
-                      onClick={() => onMarkRead(notification.id)}
+                      onClick={() => onMarkRead(notification._id)}
                     >
                       <p className="text-sm font-medium">{notification.message}</p>
                       <p className="mt-1 text-xs text-muted-foreground">
