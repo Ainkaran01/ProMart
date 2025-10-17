@@ -46,14 +46,10 @@ export const getApprovedListings = async () => {
   return res.data;
 };
 
-// // Admin gets all listings
-// export const getAllListings = async (p0: { status: string; }) => {
-//   const res = await API.get("/listings");
-//   return res.data;
-// };
-
-// // Admin updates listing status
-// export const updateListingStatus = async (id, status, comment = "") => {
-//   const res = await API.put(`/listings/${id}/status`, { status, comment });
-//   return res.data;
-// };
+// ✏️ Update an existing listing - FIXED VERSION
+export const updateListing = async (listingId, formData) => {
+  const { data } = await API.put(`/listings/${listingId}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
