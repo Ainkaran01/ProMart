@@ -13,6 +13,7 @@ import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
  import otpRoutes from "./routes/otpRoutes.js";
  import adminRoutes from "./routes/adminRoutes.js";
  import companyRoutes from "./routes/companyRoutes.js"; 
+ import blogRoutes from "./routes/blogRoutes.js";
 // import documentRoutes from "./routes/documentRoutes.js";
  import listingRoutes from "./routes/listingRoutes.js";
 // import notificationRoutes from "./routes/notificationRoutes.js";
@@ -58,6 +59,7 @@ app.use(
  app.use("/api/otp", otpRoutes);
  app.use("/api/admin", adminRoutes);
  app.use("/api/companies", companyRoutes);
+ app.use("/api/blogs", blogRoutes);
 // app.use("/api/documents", documentRoutes);
  app.use("/api/listings", listingRoutes);
  

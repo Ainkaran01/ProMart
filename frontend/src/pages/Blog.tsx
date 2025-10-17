@@ -1,100 +1,53 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Calendar, Clock, User, ArrowRight } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import Lottie from 'lottie-react';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Calendar, Clock, User, ArrowRight } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Lottie from "lottie-react";
+import { getBlogs } from "@/services/blogService";
 
 const Blog = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [blogPosts, setBlogPosts] = useState([]);
   const [animationData, setAnimationData] = useState<any>(null);
 
   useEffect(() => {
-    fetch('https://assets3.lottiefiles.com/packages/lf20_w98qte06.json')
-      .then(response => response.json())
-      .then(data => setAnimationData(data))
-      .catch(() => console.log('Animation loading failed'));
+    fetch("https://assets3.lottiefiles.com/packages/lf20_w98qte06.json")
+      .then((response) => response.json())
+      .then((data) => setAnimationData(data))
+      .catch(() => console.log("Animation loading failed"));
   }, []);
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const data = await getBlogs(selectedCategory);
+        setBlogPosts(data);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+    fetchBlogs();
+  }, [selectedCategory]);
 
-  const blogPosts = [
-    {
-      id: '1',
-      title: '10 Tips for Creating an Effective B2B Listing',
-      excerpt:
-        'Learn the best practices for creating listings that attract verified business partners and drive real results.',
-      category: 'Tips & Tricks',
-      author: 'Sarah Johnson',
-      date: '2024-01-15',
-      readTime: '5 min read',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
-    },
-    {
-      id: '2',
-      title: 'The Future of B2B Marketplaces in 2024',
-      excerpt:
-        'Explore the emerging trends and technologies shaping the future of business-to-business commerce.',
-      category: 'Industry Insights',
-      author: 'Michael Chen',
-      date: '2024-01-12',
-      readTime: '7 min read',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
-    },
-    {
-      id: '3',
-      title: 'How to Verify Your Business for Maximum Trust',
-      excerpt:
-        'A comprehensive guide to business verification and building credibility on B2B platforms.',
-      category: 'Guides',
-      author: 'Emily Rodriguez',
-      date: '2024-01-10',
-      readTime: '6 min read',
-      image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80',
-    },
-    {
-      id: '4',
-      title: 'Success Story: From Startup to Enterprise Partner',
-      excerpt:
-        'Read how TechFlow scaled their business by leveraging ProMart to find the right partners.',
-      category: 'Success Stories',
-      author: 'David Park',
-      date: '2024-01-08',
-      readTime: '4 min read',
-      image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&q=80',
-    },
-    {
-      id: '5',
-      title: 'Understanding B2B Payment Terms and Negotiations',
-      excerpt:
-        'Master the art of B2B negotiations with our expert insights on payment terms and contracts.',
-      category: 'Business Finance',
-      author: 'Lisa Thompson',
-      date: '2024-01-05',
-      readTime: '8 min read',
-      image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&q=80',
-    },
-    {
-      id: '6',
-      title: 'Building Long-Term B2B Relationships',
-      excerpt:
-        'Discover strategies for maintaining strong business relationships that stand the test of time.',
-      category: 'Relationships',
-      author: 'James Wilson',
-      date: '2024-01-03',
-      readTime: '5 min read',
-      image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80',
-    },
+  const categories = [
+    "All",
+    "Tips & Tricks",
+    "Industry Insights",
+    "Guides",
+    "Success Stories",
+    "Business Finance",
+    "Relationships",
   ];
 
-  const categories = ['All', 'Tips & Tricks', 'Industry Insights', 'Guides', 'Success Stories', 'Business Finance', 'Relationships'];
-
-  const filteredPosts = selectedCategory === 'All' 
-    ? blogPosts 
-    : blogPosts.filter(post => post.category === selectedCategory);
+  const filteredPosts =
+    selectedCategory === "All"
+      ? blogPosts
+      : blogPosts.filter((post) => post.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-background">
@@ -110,7 +63,7 @@ const Blog = () => {
               transition={{ duration: 0.6 }}
               className="text-center lg:text-left"
             >
-              <h1 
+              <h1
                 className="mb-6 text-5xl font-bold tracking-tight"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
@@ -132,7 +85,7 @@ const Blog = () => {
             )}
           </div>
         </div>
-        
+
         {/* Wave divider */}
         <div className="absolute -bottom-1 left-0 right-0">
           <svg
@@ -156,13 +109,13 @@ const Blog = () => {
             {categories.map((category) => (
               <Button
                 key={category}
-                variant={category === selectedCategory ? 'default' : 'outline'}
+                variant={category === selectedCategory ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
                 className={
-                  category === selectedCategory 
-                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold border-0' 
-                    : 'border-slate-300 text-slate-700 hover:bg-slate-100'
+                  category === selectedCategory
+                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold border-0"
+                    : "border-slate-300 text-slate-700 hover:bg-slate-100"
                 }
               >
                 {category}
@@ -173,62 +126,71 @@ const Blog = () => {
       </section>
 
       {/* Featured Post */}
-      <section className="py-12 bg-background">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <Badge className="mb-4 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 border-0">
-              Featured Post
-            </Badge>
-            <Card className="rounded-2xl overflow-hidden border border-slate-200 bg-white/80 backdrop-blur-sm shadow-lg">
-              <div className="grid md:grid-cols-2">
-                <div className="relative h-80 md:h-auto">
-                  <img
-                    src={blogPosts[0].image}
-                    alt={blogPosts[0].title}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="flex flex-col justify-center p-8">
-                  <Badge variant="secondary" className="mb-4 w-fit bg-slate-100 text-slate-700">
-                    {blogPosts[0].category}
-                  </Badge>
-                  <h2 className="mb-4 text-3xl font-bold text-slate-800">{blogPosts[0].title}</h2>
-                  <p className="mb-6 text-slate-600">{blogPosts[0].excerpt}</p>
-                  <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-slate-500">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      {blogPosts[0].author}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      {new Date(blogPosts[0].date).toLocaleDateString()}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      {blogPosts[0].readTime}
-                    </div>
+      {blogPosts.length > 0 && (
+        <section className="py-12 bg-background">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <Badge className="mb-4 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 border-0">
+                Featured Post
+              </Badge>
+              <Card className="rounded-2xl overflow-hidden border border-slate-200 bg-white/80 backdrop-blur-sm shadow-lg">
+                <div className="grid md:grid-cols-2">
+                  <div className="relative h-80 md:h-auto">
+                    <img
+                      src={blogPosts[0].image}
+                      alt={blogPosts[0].title}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
-                  <Link to={`/blog/${blogPosts[0].id}`}>
-                    <Button className="w-fit bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group">
-                      Read More
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
+                  <div className="flex flex-col justify-center p-8">
+                    <Badge
+                      variant="secondary"
+                      className="mb-4 w-fit bg-slate-100 text-slate-700"
+                    >
+                      {blogPosts[0].category}
+                    </Badge>
+                    <h2 className="mb-4 text-3xl font-bold text-slate-800">
+                      {blogPosts[0].title}
+                    </h2>
+                    <p className="mb-6 text-slate-600">
+                      {blogPosts[0].excerpt}
+                    </p>
+                    <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        {blogPosts[0].author}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        {new Date(blogPosts[0].date).toLocaleDateString()}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        {blogPosts[0].readTime}
+                      </div>
+                    </div>
+                    <Link to={`/blog/${blogPosts[0]._id}`}>
+                      <Button className="w-fit bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group">
+                        Read More
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          </motion.div>
-        </div>
-      </section>
+              </Card>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* Blog Grid */}
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
-          <h2 
+          <h2
             className="mb-8 text-3xl font-bold text-slate-800"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
@@ -236,13 +198,15 @@ const Blog = () => {
           </h2>
           {filteredPosts.length === 0 ? (
             <Card className="p-12 text-center rounded-2xl border-slate-200 bg-white/80 backdrop-blur-sm">
-              <p className="text-slate-600">No articles found in this category</p>
+              <p className="text-slate-600">
+                No articles found in this category
+              </p>
             </Card>
           ) : (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               {filteredPosts.slice(1).map((post, index) => (
                 <motion.div
-                  key={post.id}
+                  key={post._id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -257,7 +221,10 @@ const Blog = () => {
                       />
                     </div>
                     <div className="p-6">
-                      <Badge variant="secondary" className="mb-3 bg-slate-100 text-slate-700">
+                      <Badge
+                        variant="secondary"
+                        className="mb-3 bg-slate-100 text-slate-700"
+                      >
                         {post.category}
                       </Badge>
                       <h3 className="mb-3 text-xl font-semibold text-slate-800 group-hover:text-amber-600 transition-colors">
@@ -280,8 +247,11 @@ const Blog = () => {
                           {post.readTime}
                         </div>
                       </div>
-                      <Link to={`/blog/${post.id}`}>
-                        <Button variant="ghost" className="group -ml-4 p-0 text-amber-600 hover:text-amber-700 hover:bg-transparent">
+                      <Link to={`/blog/${post._id}`}>
+                        <Button
+                          variant="ghost"
+                          className="group -ml-4 p-0 text-amber-600 hover:text-amber-700 hover:bg-transparent"
+                        >
                           Read More
                           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Button>
@@ -304,14 +274,15 @@ const Blog = () => {
             viewport={{ once: true }}
             className="mx-auto max-w-2xl text-center"
           >
-            <h2 
+            <h2
               className="mb-4 text-3xl font-bold text-slate-800"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               Stay Updated
             </h2>
             <p className="mb-6 text-slate-600">
-              Subscribe to our newsletter for the latest B2B insights and success stories
+              Subscribe to our newsletter for the latest B2B insights and
+              success stories
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Input
@@ -319,7 +290,7 @@ const Blog = () => {
                 placeholder="Enter your email"
                 className="rounded-xl border-slate-300 bg-white px-4 py-3 text-sm focus:border-amber-500 focus:ring-amber-500 sm:w-80"
               />
-              <Button 
+              <Button
                 size="lg"
                 className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold shadow-lg hover:shadow-amber-500/40"
               >
@@ -350,7 +321,7 @@ const Blog = () => {
             <Button
               size="lg"
               className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 font-semibold px-8 py-6 text-lg shadow-lg hover:shadow-amber-500/40 transition-all duration-300 group"
-              onClick={() => window.location.href = '/register'}
+              onClick={() => (window.location.href = "/register")}
             >
               Get Started Today
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
