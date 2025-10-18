@@ -53,7 +53,7 @@ router.get("/listings", async (req, res) => {
 //
 // ✅ 4. Approve Listing (using controller function)
 //
-router.put("/listings/:id/approve", approveListing);
+router.put("/listings/:id/approved", approveListing);
 
 //
 // ✅ 5. Reject Listing (using controller function)

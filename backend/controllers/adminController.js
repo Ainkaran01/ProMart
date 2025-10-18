@@ -28,10 +28,10 @@ export const getDashboardStats = async (req, res) => {
 // 🟩 Get all companies
 export const getAllCompanies = async (req, res) => {
   try {
-    const companies = await User.find({ role: "company" }).select("-password");
-    res.json(companies);
+    const users = await User.find().select("-password");
+    res.json(users);
   } catch (error) {
-    console.error("Error fetching companies:", error);
+    console.error("Error fetching users:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
