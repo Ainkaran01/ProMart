@@ -80,7 +80,7 @@ const AdminDashboard = () => {
   const [comment, setComment] = useState("");
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState<any[]>([]);
   const [activeSection, setActiveSection] = useState<
     | "dashboard"
     | "pending"
@@ -107,7 +107,6 @@ const AdminDashboard = () => {
         adminApi.getMonthlyStats(),
       ]);
 
-      // Ensure arrays
       setPendingListings(Array.isArray(pendingRes) ? pendingRes : []);
       setAllListings(Array.isArray(allRes) ? allRes : []);
       setNotifications(notifs || []);
@@ -118,6 +117,7 @@ const AdminDashboard = () => {
       setAllListings([]);
     }
   };
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -132,7 +132,7 @@ const AdminDashboard = () => {
     fetchStats();
   }, []);
 
-  if (!stats) return loading;
+  if (!stats) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
 
   const handleApprove = async (listingId: string) => {
     setLoading(true);
@@ -238,7 +238,7 @@ const AdminDashboard = () => {
       <h2 className="text-xl font-semibold">{title}</h2>
 
       {!Array.isArray(listings) || listings.length === 0 ? (
-        <Card className="p-12 text-center">
+        <Card className="p-8 text-center">
           <p className="text-muted-foreground">
             No {title.toLowerCase()} to display
           </p>
@@ -252,30 +252,30 @@ const AdminDashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="p-6 transition-shadow hover:shadow-md">
-                <div className="flex items-start justify-between gap-4">
+              <Card className="p-4 sm:p-6 transition-shadow hover:shadow-md">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="flex-1">
-                    <div className="mb-2 flex items-center gap-3">
-                      <h3 className="text-lg font-semibold">{listing.title}</h3>
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <h3 className="text-base sm:text-lg font-semibold">{listing.title}</h3>
                       <StatusBadge status={listing.status} />
                     </div>
-                    <p className="mb-2 text-sm font-medium text-muted-foreground">
+                    <p className="mb-1 text-xs sm:text-sm font-medium text-muted-foreground">
                       By: {listing.companyName}
                     </p>
-                    <p className="mb-2 text-sm">{listing.description}</p>
+                    <p className="mb-2 text-xs sm:text-sm">{listing.description}</p>
                     <p className="text-xs text-muted-foreground">
                       Category: {listing.category}
                     </p>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => setViewDetailsListing(listing)}
                     >
-                      <Eye className="mr-2 h-4 w-4" />
-                      View
+                      <Eye className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                      <span className="text-xs sm:text-sm">View</span>
                     </Button>
 
                     {listing.verificationDocuments?.length > 0 && (
@@ -284,8 +284,10 @@ const AdminDashboard = () => {
                         variant="outline"
                         onClick={() => setViewDocsListing(listing)}
                       >
-                        <FileText className="mr-2 h-4 w-4" />
-                        Docs ({listing.verificationDocuments.length})
+                        <FileText className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                        <span className="text-xs sm:text-sm">
+                          Docs ({listing.verificationDocuments.length})
+                        </span>
                       </Button>
                     )}
 
@@ -298,8 +300,8 @@ const AdminDashboard = () => {
                           onClick={() => handleApprove(listing._id)}
                           disabled={loading}
                         >
-                          <CheckCircle className="mr-2 h-4 w-4" />
-                          Approve
+                          <CheckCircle className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                          <span className="text-xs sm:text-sm">Approve</span>
                         </Button>
 
                         <Button
@@ -309,8 +311,8 @@ const AdminDashboard = () => {
                           onClick={() => setSelectedListing(listing)}
                           disabled={loading}
                         >
-                          <XCircle className="mr-2 h-4 w-4" />
-                          Reject
+                          <XCircle className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                          <span className="text-xs sm:text-sm">Reject</span>
                         </Button>
                       </>
                     )}
@@ -325,7 +327,7 @@ const AdminDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar
         unreadCount={unreadCount}
         onNotificationsClick={() => setShowNotifications(true)}
@@ -346,291 +348,275 @@ const AdminDashboard = () => {
         />
       )}
 
-      <div className="container mx-auto flex gap-6 px-4 py-8">
-        {/* Sidebar */}
-        <aside className="w-64 shrink-0">
-          <Card className="sticky top-4 p-4">
-            <div className="mb-4">
-              <h2 className="font-semibold">Admin Panel</h2>
-              <p className="text-xs text-muted-foreground">
-                Manage your platform
-              </p>
-            </div>
-            <nav className="space-y-1">
-              {sidebarItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeSection === item.id;
-                return (
-                  <Button
-                    key={item.id}
-                    variant={isActive ? "secondary" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveSection(item.id)}
-                  >
-                    <Icon className="mr-2 h-4 w-4" />
-                    <span className="flex-1 text-left">{item.label}</span>
-                    {item.count !== undefined && (
-                      <span className="ml-auto rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                        {item.count}
-                      </span>
-                    )}
-                  </Button>
-                );
-              })}
-            </nav>
-          </Card>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1">
-          <motion.div
-            key={activeSection}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            {activeSection === "dashboard" && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Dashboard Overview</h2>
-
-                {/* Stats Cards */}
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Total Listings
-                      </CardTitle>
-                      <List className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">
-                        {stats.totalListings}
-                      </div>
-                      <p className="text-xs text-muted-foreground">All time</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Pending Review
-                      </CardTitle>
-                      <Clock className="h-4 w-4 text-warning" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-warning">
-                        {stats.pendingListings}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Needs attention
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Approved
-                      </CardTitle>
-                      <CheckCircle className="h-4 w-4 text-success" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-success">
-                        {stats.approvedListings}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {(
-                          (stats.approvedListings / stats.totalListings) *
-                          100
-                        ).toFixed(0)}
-                        % of total
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Active Companies
-                      </CardTitle>
-                      <Building2 className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">
-                        {stats.totalCompanies}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Registered users
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Charts */}
-                <div className="grid gap-6 lg:grid-cols-2">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Listing Activity</CardTitle>
-                      <CardDescription>
-                        Monthly listing submissions and approvals
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer
-                        config={{
-                          listings: {
-                            label: "Total Listings",
-                            color: "hsl(var(--primary))",
-                          },
-                          approved: {
-                            label: "Approved",
-                            color: "hsl(var(--success))",
-                          },
-                        }}
-                        className="h-[300px] w-full"
-                      >
-                        <BarChart data={chartData}>
-                          <CartesianGrid
-                            strokeDasharray="3 3"
-                            className="stroke-muted"
-                          />
-                          <XAxis
-                            dataKey="month"
-                            tick={{
-                              fill: "hsl(var(--muted-foreground))",
-                              fontSize: 12,
-                            }}
-                          />
-                          <YAxis
-                            tick={{
-                              fill: "hsl(var(--muted-foreground))",
-                              fontSize: 12,
-                            }}
-                          />
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <Bar
-                            dataKey="listings"
-                            fill="hsl(var(--primary))"
-                            radius={[4, 4, 0, 0]}
-                          />
-                          <Bar
-                            dataKey="approved"
-                            fill="hsl(var(--success))"
-                            radius={[4, 4, 0, 0]}
-                          />
-                        </BarChart>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Status Distribution</CardTitle>
-                      <CardDescription>
-                        Current listing status breakdown
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer
-                        config={{
-                          approved: {
-                            label: "Approved",
-                            color: "hsl(var(--success))",
-                          },
-                          pending: {
-                            label: "Pending",
-                            color: "hsl(var(--warning))",
-                          },
-                          rejected: {
-                            label: "Rejected",
-                            color: "hsl(var(--destructive))",
-                          },
-                        }}
-                        className="h-[300px] w-full"
-                      >
-                        <PieChart>
-                          <Pie
-                            data={statusData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, value }) => `${name}: ${value}`}
-                            outerRadius={80}
-                            dataKey="value"
-                          >
-                            {statusData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                        </PieChart>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="lg:col-span-2">
-                    <CardHeader>
-                      <CardTitle>Growth Trend</CardTitle>
-                      <CardDescription>
-                        Approved listings over time
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ChartContainer
-                        config={{
-                          approved: {
-                            label: "Approved Listings",
-                            color: "hsl(var(--primary))",
-                          },
-                        }}
-                        className="h-[300px] w-full"
-                      >
-                        <LineChart data={chartData}>
-                          <CartesianGrid
-                            strokeDasharray="3 3"
-                            className="stroke-muted"
-                          />
-                          <XAxis
-                            dataKey="month"
-                            tick={{
-                              fill: "hsl(var(--muted-foreground))",
-                              fontSize: 12,
-                            }}
-                          />
-                          <YAxis
-                            tick={{
-                              fill: "hsl(var(--muted-foreground))",
-                              fontSize: 12,
-                            }}
-                          />
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <Line
-                            type="monotone"
-                            dataKey="approved"
-                            stroke="hsl(var(--primary))"
-                            strokeWidth={2}
-                            dot={{ fill: "hsl(var(--primary))", r: 4 }}
-                            activeDot={{ r: 6 }}
-                          />
-                        </LineChart>
-                      </ChartContainer>
-                    </CardContent>
-                  </Card>
-                </div>
+      <div className="flex-1 container mx-auto px-2 sm:px-4 py-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Sidebar - only visible on large screens */}
+          <aside className="lg:w-64 lg:shrink-0 hidden lg:block">
+            <Card className="sticky top-6 p-4">
+              <div className="mb-4">
+                <h2 className="font-semibold">Admin Panel</h2>
+                <p className="text-xs text-muted-foreground">
+                  Manage your platform
+                </p>
               </div>
-            )}
-            {activeSection === "pending" &&
-              renderListings(pendingListings, "Pending Listings")}
-            {activeSection === "approved" &&
-              renderListings(approvedListings, "Approved Listings")}
-            {activeSection === "rejected" &&
-              renderListings(rejectedListings, "Rejected Listings")}
-            {activeSection === "users" && <UserManagement />}
-            {activeSection === "settings" && <Settings />}
-            {activeSection === "blog" && <BlogManagement />}
-          </motion.div>
-        </main>
+              <nav className="space-y-1">
+                {sidebarItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeSection === item.id;
+                  return (
+                    <Button
+                      key={item.id}
+                      variant={isActive ? "secondary" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection(item.id)}
+                    >
+                      <Icon className="mr-2 h-4 w-4" />
+                      <span className="flex-1 text-left">{item.label}</span>
+                      {item.count !== undefined && (
+                        <span className="ml-auto rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                          {item.count}
+                        </span>
+                      )}
+                    </Button>
+                  );
+                })}
+              </nav>
+            </Card>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1 w-full">
+            <motion.div
+              key={activeSection}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full"
+            >
+              {activeSection === "dashboard" && (
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-bold">Dashboard Overview</h2>
+
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                          Total Listings
+                        </CardTitle>
+                        <List className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold">
+                          {stats.totalListings}
+                        </div>
+                        <p className="text-xs text-muted-foreground">All time</p>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                          Pending Review
+                        </CardTitle>
+                        <Clock className="h-4 w-4 text-warning" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-warning">
+                          {stats.pendingListings}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Needs attention
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                          Approved
+                        </CardTitle>
+                        <CheckCircle className="h-4 w-4 text-success" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold text-success">
+                          {stats.approvedListings}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {(
+                            (stats.approvedListings / stats.totalListings) *
+                            100
+                          ).toFixed(0)}
+                          % of total
+                        </p>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                          Active Companies
+                        </CardTitle>
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold">
+                          {stats.totalCompanies}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Registered users
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Charts */}
+                  <div className="grid grid-cols-1 gap-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Listing Activity</CardTitle>
+                        <CardDescription>
+                          Monthly listing submissions and approvals
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ChartContainer
+                          config={{
+                            listings: {
+                              label: "Total Listings",
+                              color: "hsl(var(--primary))",
+                            },
+                            approved: {
+                              label: "Approved",
+                              color: "hsl(var(--success))",
+                            },
+                          }}
+                          className="h-[250px] w-full"
+                        >
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={chartData}>
+                              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                              <XAxis
+                                dataKey="month"
+                                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                              />
+                              <YAxis
+                                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                              />
+                              <ChartTooltip content={<ChartTooltipContent />} />
+                              <Bar
+                                dataKey="listings"
+                                fill="hsl(var(--primary))"
+                                radius={[4, 4, 0, 0]}
+                              />
+                              <Bar
+                                dataKey="approved"
+                                fill="hsl(var(--success))"
+                                radius={[4, 4, 0, 0]}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </ChartContainer>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Status Distribution</CardTitle>
+                        <CardDescription>
+                          Current listing status breakdown
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ChartContainer
+                          config={{
+                            approved: { label: "Approved", color: "hsl(var(--success))" },
+                            pending: { label: "Pending", color: "hsl(var(--warning))" },
+                            rejected: { label: "Rejected", color: "hsl(var(--destructive))" },
+                          }}
+                          className="h-[250px] w-full"
+                        >
+                          <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                              <Pie
+                                data={statusData}
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={70}
+                                labelLine={false}
+                                label={({ name, value }) => `${name}: ${value}`}
+                                dataKey="value"
+                              >
+                                {statusData.map((entry, index) => (
+                                  <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                              </Pie>
+                              <ChartTooltip content={<ChartTooltipContent />} />
+                            </PieChart>
+                          </ResponsiveContainer>
+                        </ChartContainer>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Growth Trend</CardTitle>
+                        <CardDescription>
+                          Approved listings over time
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ChartContainer
+                          config={{
+                            approved: {
+                              label: "Approved Listings",
+                              color: "hsl(var(--primary))",
+                            },
+                          }}
+                          className="h-[250px] w-full"
+                        >
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={chartData}>
+                              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                              <XAxis
+                                dataKey="month"
+                                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                              />
+                              <YAxis
+                                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                              />
+                              <ChartTooltip content={<ChartTooltipContent />} />
+                              <Line
+                                type="monotone"
+                                dataKey="approved"
+                                stroke="hsl(var(--primary))"
+                                strokeWidth={2}
+                                dot={{ fill: "hsl(var(--primary))", r: 4 }}
+                                activeDot={{ r: 6 }}
+                              />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </ChartContainer>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              )}
+
+              {activeSection === "pending" &&
+                renderListings(pendingListings, "Pending Listings")}
+              {activeSection === "approved" &&
+                renderListings(approvedListings, "Approved Listings")}
+              {activeSection === "rejected" &&
+                renderListings(rejectedListings, "Rejected Listings")}
+              {activeSection === "users" && <UserManagement />}
+              {activeSection === "settings" && <Settings />}
+              {activeSection === "blog" && <BlogManagement />}
+            </motion.div>
+          </main>
+        </div>
       </div>
 
+      {/* Reject Listing Dialog */}
       <Dialog
         open={!!selectedListing}
         onOpenChange={() => setSelectedListing(null)}
@@ -681,9 +667,9 @@ const AdminDashboard = () => {
         open={!!viewDetailsListing}
         onOpenChange={() => setViewDetailsListing(null)}
       >
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl">
+            <DialogTitle className="text-xl sm:text-2xl">
               {viewDetailsListing?.title}
             </DialogTitle>
             <div className="flex items-center gap-2">
@@ -692,78 +678,58 @@ const AdminDashboard = () => {
           </DialogHeader>
 
           {viewDetailsListing && (
-            <div className="space-y-6">
+            <div className="space-y-6 py-2">
               <div>
-                <h4 className="mb-2 font-semibold">Company Information</h4>
-                <Card className="p-4">
-                  <p className="mb-1 text-sm">
-                    <span className="font-medium">Company:</span>{" "}
-                    {viewDetailsListing.companyName}
+                <h4 className="mb-2 font-semibold text-sm sm:text-base">Company Information</h4>
+                <Card className="p-3 sm:p-4">
+                  <p className="mb-1 text-xs sm:text-sm">
+                    <span className="font-medium">Company:</span> {viewDetailsListing.companyName}
                   </p>
-                  <p className="mb-1 text-sm">
-                    <span className="font-medium">Category:</span>{" "}
-                    {viewDetailsListing.category}
+                  <p className="mb-1 text-xs sm:text-sm">
+                    <span className="font-medium">Category:</span> {viewDetailsListing.category}
                   </p>
-                  <p className="mb-1 text-sm">
-                    <span className="font-medium">Website:</span>{" "}
-                    {viewDetailsListing.website || "N/A"}
+                  <p className="mb-1 text-xs sm:text-sm">
+                    <span className="font-medium">Website:</span> {viewDetailsListing.website || "N/A"}
                   </p>
-                  <p className="mb-1 text-sm">
-                    <span className="font-medium">Location:</span>{" "}
-                    {viewDetailsListing.location || "N/A"}
+                  <p className="mb-1 text-xs sm:text-sm">
+                    <span className="font-medium">Location:</span> {viewDetailsListing.location || "N/A"}
                   </p>
-                  <p className="mb-1 text-sm">
+                  <p className="mb-1 text-xs sm:text-sm">
                     <span className="font-medium">Key Features:</span>{" "}
                     {(() => {
                       let features: string[] = [];
-
                       try {
                         if (
                           Array.isArray(viewDetailsListing.keyFeatures) &&
                           typeof viewDetailsListing.keyFeatures[0] === "string"
                         ) {
-                          // case: ["[\"...\", \"...\"]"]
-                          features = JSON.parse(
-                            viewDetailsListing.keyFeatures[0]
-                          );
-                        } else if (
-                          Array.isArray(viewDetailsListing.keyFeatures)
-                        ) {
-                          // case: ["Cloud-Based Dashboard", "Role-Based Access Control"]
+                          features = JSON.parse(viewDetailsListing.keyFeatures[0]);
+                        } else if (Array.isArray(viewDetailsListing.keyFeatures)) {
                           features = viewDetailsListing.keyFeatures;
-                        } else if (
-                          typeof viewDetailsListing.keyFeatures === "string"
-                        ) {
-                          // case: single JSON string
+                        } else if (typeof viewDetailsListing.keyFeatures === "string") {
                           features = JSON.parse(viewDetailsListing.keyFeatures);
                         }
                       } catch (err) {
                         console.error("Error parsing keyFeatures:", err);
                       }
-
-                      return features.length > 0
-                        ? features.join(", ")
-                        : "No features listed";
+                      return features.length > 0 ? features.join(", ") : "No features listed";
                     })()}
                   </p>
                 </Card>
               </div>
 
               <div>
-                <h4 className="mb-2 font-semibold">Description</h4>
-                <Card className="p-4">
-                  <p className="text-sm">{viewDetailsListing.description}</p>
+                <h4 className="mb-2 font-semibold text-sm sm:text-base">Description</h4>
+                <Card className="p-3 sm:p-4">
+                  <p className="text-xs sm:text-sm">{viewDetailsListing.description}</p>
                 </Card>
               </div>
 
               {viewDetailsListing.attachments &&
                 viewDetailsListing.attachments.length > 0 && (
-                  <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-4 shadow-lg">
-                    <div className="mb-6 flex items-center gap-3">
-                      <h4 className="mb-2 font-semibold">Company Images</h4>
-                    </div>
-
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <Card className="rounded-xl border p-3 sm:p-4">
+                    <h4 className="mb-3 font-semibold text-sm sm:text-base">Company Images</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {viewDetailsListing.attachments
                         .filter(
                           (file) =>
@@ -772,9 +738,9 @@ const AdminDashboard = () => {
                             file.url?.toLowerCase().endsWith(".png")
                         )
                         .map((image, index) => (
-                          <motion.div
+                          <div
                             key={index}
-                            className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md"
+                            className="overflow-hidden rounded-lg border"
                           >
                             <img
                               src={
@@ -782,10 +748,10 @@ const AdminDashboard = () => {
                                   ? image.url
                                   : `http://localhost:5000${image.url}`
                               }
-                              alt={image.name || `Company Image ${index + 1}`}
-                              className="h-48 w-full object-cover"
+                              alt={image.name || `Image ${index + 1}`}
+                              className="h-32 sm:h-40 w-full object-cover"
                             />
-                          </motion.div>
+                          </div>
                         ))}
                     </div>
                   </Card>
@@ -794,21 +760,19 @@ const AdminDashboard = () => {
               {viewDetailsListing.verificationDocuments &&
                 viewDetailsListing.verificationDocuments.length > 0 && (
                   <div>
-                    <h4 className="mb-2 font-semibold">
+                    <h4 className="mb-2 font-semibold text-sm sm:text-base">
                       Verification Documents
                     </h4>
                     <div className="space-y-2">
                       {viewDetailsListing.verificationDocuments.map((doc) => (
                         <Card key={doc.id} className="p-3">
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 sm:gap-3">
                               <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10">
                                 <FileText className="h-4 w-4 text-primary" />
                               </div>
                               <div>
-                                <p className="text-sm font-medium">
-                                  {doc.name}
-                                </p>
+                                <p className="text-xs sm:text-sm font-medium">{doc.name}</p>
                                 <p className="text-xs text-muted-foreground">
                                   {(doc.size / 1024).toFixed(2)} KB
                                 </p>
@@ -816,8 +780,8 @@ const AdminDashboard = () => {
                             </div>
                             <Button variant="outline" size="sm" asChild>
                               <a href={doc.url} download={doc.name}>
-                                <Download className="mr-2 h-4 w-4" />
-                                Download
+                                <Download className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                                <span className="text-xs sm:text-sm">Download</span>
                               </a>
                             </Button>
                           </div>
@@ -828,7 +792,7 @@ const AdminDashboard = () => {
                 )}
 
               {viewDetailsListing.status === "pending" && (
-                <div className="flex gap-3 border-t pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
                   <Button
                     variant="outline"
                     className="flex-1 border-success text-success hover:bg-success hover:text-success-foreground"
@@ -838,8 +802,8 @@ const AdminDashboard = () => {
                     }}
                     disabled={loading}
                   >
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    Approve
+                    <CheckCircle className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                    <span className="text-xs sm:text-sm">Approve</span>
                   </Button>
                   <Button
                     variant="outline"
@@ -850,8 +814,8 @@ const AdminDashboard = () => {
                     }}
                     disabled={loading}
                   >
-                    <XCircle className="mr-2 h-4 w-4" />
-                    Reject
+                    <XCircle className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                    <span className="text-xs sm:text-sm">Reject</span>
                   </Button>
                 </div>
               )}
@@ -865,7 +829,7 @@ const AdminDashboard = () => {
         open={!!viewDocsListing}
         onOpenChange={() => setViewDocsListing(null)}
       >
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Verification Documents</DialogTitle>
             <p className="text-sm text-muted-foreground">
@@ -877,24 +841,24 @@ const AdminDashboard = () => {
           viewDocsListing.verificationDocuments.length > 0 ? (
             <div className="space-y-3">
               {viewDocsListing.verificationDocuments.map((doc) => (
-                <Card key={doc.id} className="p-4">
+                <Card key={doc.id} className="p-3 sm:p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                         <FileText className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="font-medium">{doc.name}</p>
+                        <p className="font-medium text-sm">{doc.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          {(doc.size / 1024).toFixed(2)} KB • Uploaded{" "}
+                          {(doc.size / 1024).toFixed(2)} KB •{" "}
                           {new Date(doc.uploadedAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
                     <Button variant="outline" size="sm" asChild>
                       <a href={doc.url} download={doc.name}>
-                        <Download className="mr-2 h-4 w-4" />
-                        Download
+                        <Download className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                        <span className="text-xs sm:text-sm">Download</span>
                       </a>
                     </Button>
                   </div>
