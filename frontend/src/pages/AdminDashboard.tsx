@@ -62,7 +62,11 @@ import {
 import UserManagement from "./UserManagement";
 import Settings from "./Settings";
 import adminApi from "@/services/adminService";
-import { getNotifications, markAllAsRead, markAsRead } from "@/services/notificationService";
+import {
+  getNotifications,
+  markAllAsRead,
+  markAsRead,
+} from "@/services/notificationService";
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -107,7 +111,7 @@ const AdminDashboard = () => {
       setPendingListings(Array.isArray(pendingRes) ? pendingRes : []);
       setAllListings(Array.isArray(allRes) ? allRes : []);
       setNotifications(notifs || []);
-       setChartData(Array.isArray(monthlyRes) ? monthlyRes : []);
+      setChartData(Array.isArray(monthlyRes) ? monthlyRes : []);
     } catch (error) {
       console.error("❌ Failed to load data:", error);
       setPendingListings([]);
@@ -150,42 +154,41 @@ const AdminDashboard = () => {
     }
   };
 
- const handleReject = async (listingId: string) => {
-  if (!comment.trim()) {
-    toast({
-      title: "Comment required",
-      description: "Please provide a reason for rejection",
-      variant: "destructive",
-    });
-    return;
-  }
+  const handleReject = async (listingId: string) => {
+    if (!comment.trim()) {
+      toast({
+        title: "Comment required",
+        description: "Please provide a reason for rejection",
+        variant: "destructive",
+      });
+      return;
+    }
 
-  setLoading(true);
-  try {
-    await adminApi.rejectListing(listingId, comment);
-    toast({
-      title: "Listing rejected",
-      description: "The company has been notified with your comment",
-    });
-    setSelectedListing(null);
-    setComment("");
-    loadData();
-  } catch (error) {
-    console.error("Rejection error:", error);
-    toast({
-      title: "Failed to reject listing",
-      description: "Please try again",
-      variant: "destructive",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    try {
+      await adminApi.rejectListing(listingId, comment);
+      toast({
+        title: "Listing rejected",
+        description: "The company has been notified with your comment",
+      });
+      setSelectedListing(null);
+      setComment("");
+      loadData();
+    } catch (error) {
+      console.error("Rejection error:", error);
+      toast({
+        title: "Failed to reject listing",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
   const approvedListings = allListings.filter((l) => l.status === "approved");
   const rejectedListings = allListings.filter((l) => l.status === "rejected");
-  
 
   const sidebarItems = [
     { id: "dashboard" as const, label: "Dashboard", icon: BarChart3 },
@@ -211,8 +214,6 @@ const AdminDashboard = () => {
     { id: "settings" as const, label: "Account Settings", icon: SettingsIcon },
     { id: "blog" as const, label: "Blog Management", icon: BookOpen },
   ];
-
- 
 
   const statusData = [
     {
@@ -699,9 +700,51 @@ const AdminDashboard = () => {
                     <span className="font-medium">Company:</span>{" "}
                     {viewDetailsListing.companyName}
                   </p>
-                  <p className="text-sm">
+                  <p className="mb-1 text-sm">
                     <span className="font-medium">Category:</span>{" "}
                     {viewDetailsListing.category}
+                  </p>
+                  <p className="mb-1 text-sm">
+                    <span className="font-medium">Website:</span>{" "}
+                    {viewDetailsListing.website || "N/A"}
+                  </p>
+                  <p className="mb-1 text-sm">
+                    <span className="font-medium">Location:</span>{" "}
+                    {viewDetailsListing.location || "N/A"}
+                  </p>
+                  <p className="mb-1 text-sm">
+                    <span className="font-medium">Key Features:</span>{" "}
+                    {(() => {
+                      let features: string[] = [];
+
+                      try {
+                        if (
+                          Array.isArray(viewDetailsListing.keyFeatures) &&
+                          typeof viewDetailsListing.keyFeatures[0] === "string"
+                        ) {
+                          // case: ["[\"...\", \"...\"]"]
+                          features = JSON.parse(
+                            viewDetailsListing.keyFeatures[0]
+                          );
+                        } else if (
+                          Array.isArray(viewDetailsListing.keyFeatures)
+                        ) {
+                          // case: ["Cloud-Based Dashboard", "Role-Based Access Control"]
+                          features = viewDetailsListing.keyFeatures;
+                        } else if (
+                          typeof viewDetailsListing.keyFeatures === "string"
+                        ) {
+                          // case: single JSON string
+                          features = JSON.parse(viewDetailsListing.keyFeatures);
+                        }
+                      } catch (err) {
+                        console.error("Error parsing keyFeatures:", err);
+                      }
+
+                      return features.length > 0
+                        ? features.join(", ")
+                        : "No features listed";
+                    })()}
                   </p>
                 </Card>
               </div>
@@ -713,16 +756,40 @@ const AdminDashboard = () => {
                 </Card>
               </div>
 
-              {viewDetailsListing.adminComment && (
-                <div>
-                  <h4 className="mb-2 font-semibold text-destructive">
-                    Admin Feedback
-                  </h4>
-                  <Card className="border-destructive/50 bg-destructive/5 p-4">
-                    <p className="text-sm">{viewDetailsListing.adminComment}</p>
+              {viewDetailsListing.attachments &&
+                viewDetailsListing.attachments.length > 0 && (
+                  <Card className="rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm p-4 shadow-lg">
+                    <div className="mb-6 flex items-center gap-3">
+                      <h4 className="mb-2 font-semibold">Company Images</h4>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {viewDetailsListing.attachments
+                        .filter(
+                          (file) =>
+                            file.url?.toLowerCase().endsWith(".jpg") ||
+                            file.url?.toLowerCase().endsWith(".jpeg") ||
+                            file.url?.toLowerCase().endsWith(".png")
+                        )
+                        .map((image, index) => (
+                          <motion.div
+                            key={index}
+                            className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md"
+                          >
+                            <img
+                              src={
+                                image?.url?.startsWith("http")
+                                  ? image.url
+                                  : `http://localhost:5000${image.url}`
+                              }
+                              alt={image.name || `Company Image ${index + 1}`}
+                              className="h-48 w-full object-cover"
+                            />
+                          </motion.div>
+                        ))}
+                    </div>
                   </Card>
-                </div>
-              )}
+                )}
 
               {viewDetailsListing.verificationDocuments &&
                 viewDetailsListing.verificationDocuments.length > 0 && (

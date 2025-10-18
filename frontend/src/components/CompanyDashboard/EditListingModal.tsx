@@ -35,15 +35,36 @@ const EditListingModal = ({ open, onOpenChange, listing, onUpdated }) => {
   // ✅ Pre-fill when editing
   useEffect(() => {
     if (listing) {
+      let parsedFeatures: string[] = [];
+
+      try {
+        // if it's ["[...actual array...]"]
+        if (
+          Array.isArray(listing.keyFeatures) &&
+          listing.keyFeatures.length > 0 &&
+          typeof listing.keyFeatures[0] === "string"
+        ) {
+          parsedFeatures = JSON.parse(listing.keyFeatures[0]);
+        }
+        // normal case (array)
+        else if (Array.isArray(listing.keyFeatures)) {
+          parsedFeatures = listing.keyFeatures;
+        }
+        // if it's plain string
+        else if (typeof listing.keyFeatures === "string") {
+          parsedFeatures = JSON.parse(listing.keyFeatures);
+        }
+      } catch (err) {
+        console.error("Error parsing keyFeatures:", err);
+        parsedFeatures = [];
+      }
       setFormData({
         title: listing.title || "",
         description: listing.description || "",
         category: listing.category || "",
         location: listing.location || "",
         website: listing.website || "",
-        keyFeatures: Array.isArray(listing.keyFeatures)
-          ? listing.keyFeatures
-          : JSON.parse(listing.keyFeatures || "[]"),
+        keyFeatures: parsedFeatures,
       });
 
       // ✅ Preserve all metadata for existing files
@@ -128,7 +149,7 @@ const EditListingModal = ({ open, onOpenChange, listing, onUpdated }) => {
       // 🧩 Handle key features as JSON string
       formDataToSend.append(
         "keyFeatures",
-        JSON.stringify(formData.keyFeatures)
+        JSON.stringify([JSON.stringify(formData.keyFeatures)])
       );
 
       // ✅ Preserve ALL metadata for existing files
