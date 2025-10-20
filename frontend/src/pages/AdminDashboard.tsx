@@ -34,6 +34,7 @@ import {
   TrendingUp,
   Clock,
   Building2,
+  Trash,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
@@ -148,6 +149,26 @@ const AdminDashboard = () => {
     } catch (error) {
       toast({
         title: "Failed to approve",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handledelete = async (listingId: string) => {
+    setLoading(true);
+    try {
+      await adminApi.deleteListing(listingId);
+      toast({
+        title: "Listing deleted",
+        description: "The listing has been removed successfully",
+      });
+      setSelectedListing(null);
+      loadData();
+    } catch (error) {
+      toast({
+        title: "Failed to delete",
         variant: "destructive",
       });
     } finally {
@@ -278,6 +299,21 @@ const AdminDashboard = () => {
                     >
                       <Eye className="mr-2 h-4 w-4" />
                       View
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        const confirmed = window.confirm(
+                          "Are you sure you want to delete this listing? This action cannot be undone."
+                        );
+                        if (confirmed) {
+                          handledelete(listing._id);
+                        }
+                      }}
+                    >
+                      <Trash className="mr-2 h-4 w-4" />
+                      Delete
                     </Button>
 
                     {listing.verificationDocuments?.length > 0 && (
