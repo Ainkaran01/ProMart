@@ -9,9 +9,9 @@ import {
   rejectListing,
   deactivateUser,
   reactivateUser,
-  resetUserPassword 
-
+  resetUserPassword,
 } from "../controllers/adminController.js";
+import sendEmail from "../services/emailService.js";
 
 const router = express.Router();
 
@@ -68,13 +68,41 @@ router.put("/listings/:id/reject", rejectListing);
 //
 router.delete("/listings/:id", async (req, res) => {
   try {
-    const listing = await Listing.findById(req.params.id);
-    if (!listing) return res.status(404).json({ message: "Listing not found" });
+    const listing = await Listing.findById(req.params.id).populate(
+      "companyId",
+      "email companyName"
+    );
+
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    const companyEmail = listing.companyId?.email;
+    const companyName = listing.companyId?.companyName || "Company";
 
     await listing.deleteOne();
-    res.json({ message: "Listing deleted successfully" });
+
+    await sendEmail(
+      companyEmail,
+      "Listing Removed from Platform",
+      `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2>Dear ${companyName},</h2>
+      <p>We wanted to inform you that your listing titled 
+      <strong>"${listing.title}"</strong> has been removed from our platform.</p>
+
+      <p>If you believe this is a mistake or want clarification, 
+      please contact our support team.</p>
+
+      <p style="margin-top:20px;">Best Regards,<br/>Admin Team</p>
+    </div>
+  `
+    );
+    console.log(`📧 Email sent to ${companyEmail}`);
+
+    res.json({ message: "Listing deleted and email sent successfully" });
   } catch (error) {
-    console.error("Error deleting listing:", error);
+    console.error("❌ Error deleting listing:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -117,8 +145,18 @@ router.get("/listings/monthly", async (req, res) => {
     ]);
 
     const months = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
 
     const chartData = stats.map((s) => ({
