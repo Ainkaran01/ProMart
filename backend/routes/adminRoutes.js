@@ -5,9 +5,12 @@ import { protect, adminOnly } from "../middlewares/authMiddleware.js";
 import {
   getDashboardStats,
   getAllCompanies,
-  getAllListings,
   approveListing,
-  rejectListing
+  rejectListing,
+  deactivateUser,
+  reactivateUser,
+  resetUserPassword 
+
 } from "../controllers/adminController.js";
 
 const router = express.Router();
@@ -132,4 +135,7 @@ router.get("/listings/monthly", async (req, res) => {
   }
 });
 
+router.patch("/reset-password/:id", resetUserPassword);
+router.patch("/reactivate/:id", reactivateUser);
+router.patch("/deactivate/:id", deactivateUser);
 export default router;

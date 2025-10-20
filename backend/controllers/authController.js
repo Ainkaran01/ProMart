@@ -50,6 +50,13 @@ export const loginUser = async (req, res) => {
     user.passwordChangedAt = new Date();
     await user.save();
   }
+  if (!user.isActive) {
+  return res.status(403).json({
+    success: false,
+    message: "Your account has been deactivated. Please contact support.",
+  });
+}
+
 
   res.json({
     _id: user._id,
