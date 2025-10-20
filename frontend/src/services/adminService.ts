@@ -13,7 +13,21 @@ const adminApi = {
     const { data } = await API.get("/admin/companies");
     return data;
   },
-
+  // ✅ Reset user password
+  resetPassword: async (id) => {
+    const res = await API.patch(`/admin/reset-password/${id}`);
+    return res.data;
+  },
+  // ✅ Reactivate user account
+  reactivateUser: async (id) => {
+    const res = await API.patch(`/admin/reactivate/${id}`);
+    return res.data;
+  },
+  // ✅ Deactivate user account
+  deactivateUser: async (id) => {
+    const res = await API.patch(`/admin/deactivate/${id}`);
+    return res.data;
+  },
   // ✅ Get all listings
   // adminService.ts
   getListings: async (params?: any) => {
