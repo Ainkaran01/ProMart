@@ -10,6 +10,7 @@ import { Mail, Phone, MapPin, Clock, MessageSquare, ArrowRight } from 'lucide-re
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Lottie from 'lottie-react';
+import API from '@/api/API';
 
 const Contact = () => {
   const { toast } = useToast();
@@ -29,20 +30,42 @@ const Contact = () => {
       .catch(() => console.log('Animation loading failed'));
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
 
-    // Simulate form submission
-    setTimeout(() => {
+  try {
+    const res = await fetch("http://localhost:5000/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
       toast({
-        title: 'Message sent!',
+        title: "Message sent!",
         description: "We'll get back to you within 24 hours.",
       });
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setLoading(false);
-    }, 1500);
-  };
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } else {
+      toast({
+        title: "Failed to send message",
+        description: data.message || "Something went wrong.",
+        variant: "destructive",
+      });
+    }
+  } catch (error) {
+    toast({
+      title: "Network Error",
+      description: "Please try again later.",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const contactInfo = [
     {

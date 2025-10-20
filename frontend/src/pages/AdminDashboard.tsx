@@ -38,7 +38,7 @@ import {
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
 import NotificationCenter from "@/components/NotificationCenter";
-import { useNavigate } from "react-router-dom";
+import ContactManagement from "./ContactManagement";
 import Footer from "@/components/Footer";
 import BlogManagement from "./BlogManagement";
 import {
@@ -89,6 +89,7 @@ const AdminDashboard = () => {
     | "users"
     | "settings"
     | "blog"
+    | "contact"
   >("dashboard");
   const [viewDetailsListing, setViewDetailsListing] = useState<Listing | null>(
     null
@@ -213,6 +214,7 @@ const AdminDashboard = () => {
     { id: "users" as const, label: "User Management", icon: Users },
     { id: "settings" as const, label: "Account Settings", icon: SettingsIcon },
     { id: "blog" as const, label: "Blog Management", icon: BookOpen },
+    { id: "contact" as const, label: "Contact Messages", icon: List },
   ];
 
   const statusData = [
@@ -627,6 +629,7 @@ const AdminDashboard = () => {
             {activeSection === "users" && <UserManagement />}
             {activeSection === "settings" && <Settings />}
             {activeSection === "blog" && <BlogManagement />}
+            {activeSection === "contact" && <ContactManagement />}
           </motion.div>
         </main>
       </div>
