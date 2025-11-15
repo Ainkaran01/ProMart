@@ -16,6 +16,7 @@ import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
  import blogRoutes from "./routes/blogRoutes.js";
  import listingRoutes from "./routes/listingRoutes.js";
  import notificationRoutes from "./routes/notificationRoutes.js";
+ import contactRoutes from "./routes/contactRoutes.js";
 
 dotenv.config();
 
@@ -61,7 +62,7 @@ app.use(
  app.use("/api/blogs", blogRoutes);
  app.use("/api/listings", listingRoutes);
  app.use("/api/notifications", notificationRoutes);
-
+ app.use("/api/contact", contactRoutes);
 
 // Production Frontend Serve (optional if deploying full MERN)
 if (NODE_ENV === "production") {

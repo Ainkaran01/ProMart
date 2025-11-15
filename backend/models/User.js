@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
       default: "company",
     },
     passwordChangedAt: Date,
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

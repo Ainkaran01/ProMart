@@ -10,6 +10,7 @@ export interface User {
   companyName?: string;
   token:string;
   createdAt: string;
+  isActive: boolean;
 }
 
 export interface Attachment {
