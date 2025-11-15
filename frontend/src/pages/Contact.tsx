@@ -10,13 +10,26 @@ import { Mail, Phone, MapPin, Clock, MessageSquare, ArrowRight } from 'lucide-re
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Lottie from 'lottie-react';
-import API from '@/api/API';
+
+interface ContactInfo {
+  icon: React.ComponentType<any>;
+  title: string;
+  detail: string;
+  link: string | null;
+}
+
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
 
 const Contact = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [animationData, setAnimationData] = useState<any>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     subject: '',
@@ -30,44 +43,44 @@ const Contact = () => {
       .catch(() => console.log('Animation loading failed'));
   }, []);
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const res = await fetch("http://localhost:5000/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      toast({
-        title: "Message sent!",
-        description: "We'll get back to you within 24 hours.",
+    try {
+      const res = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } else {
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast({
+          title: "Message sent!",
+          description: "We'll get back to you within 24 hours.",
+        });
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        toast({
+          title: "Failed to send message",
+          description: data.message || "Something went wrong.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
       toast({
-        title: "Failed to send message",
-        description: data.message || "Something went wrong.",
+        title: "Network Error",
+        description: "Please try again later.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    toast({
-      title: "Network Error",
-      description: "Please try again later.",
-      variant: "destructive",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
-  const contactInfo = [
+  const contactInfo: ContactInfo[] = [
     {
       icon: Mail,
       title: 'Email Us',
@@ -116,7 +129,7 @@ const Contact = () => {
                 Get in Touch
               </h1>
               <p className="text-xl text-slate-300">
-                Have questions? We'd love to hear from you. Send us a message and we'll respond
+                Have questions? We&apos;d love to hear from you. Send us a message and we&apos;ll respond
                 as soon as possible.
               </p>
             </motion.div>
@@ -305,14 +318,15 @@ const Contact = () => {
               We welcome you to visit our headquarters in San Francisco
             </p>
             <div className="overflow-hidden rounded-2xl shadow-lg">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0977641932937!2d-122.41941648468186!3d37.77492997975903!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sTwitter%20HQ!5e0!3m2!1sen!2sus!4v1619721181829!5m2!1sen!2sus"
-                width="100%"
-                height="400"
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.1930316196117!2d80.15686227450514!3d9.67793707849471!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3afeff48d3d8b96d%3A0x44887b8f7c3bd3a0!2sNorthern%20Engineering%20Solutions!5e1!3m2!1sen!2slk!4v1763182299324!5m2!1sen!2slk" 
+                width="100%" 
+                height="450" 
                 style={{ border: 0 }}
                 allowFullScreen
-                loading="lazy"
-                title="ProMart Office Location"
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Office Location"
               ></iframe>
             </div>
           </div>
